@@ -1,0 +1,79 @@
+version: '3.2'
+
+services:
+  # ----- CONTENEDOR PARA BASE DE DATOS -----
+  database:
+    container_name: arca-cms-database
+    image: postgres:13
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - ./cms/dump:/docker-entrypoint-initdb.d
+      - ./cms/data:/var/lib/postgresql/data
+    networks:
+      - arca-cms-network
+    environment:
+      POSTGRES_USER: 'arca'
+      POSTGRES_PASSWORD: 'arca'
+      POSTGRES_DB: 'arca'
+
+  # ----- CONTENEDOR PARA SISTEMA CACHE -----
+  cache:
+    container_name: arca-cms-cache
+    image: redis:6
+    restart: unless-stopped
+    networks:
+      - arca-cms-network
+
+  # ----- CONTENEDOR PARA CMS -----
+  directus:
+    container_name: arca-cms
+    image: directus/directus
+    restart: unless-stopped
+    ports:
+      - 8055:8055
+    volumes:
+      - ./cms/uploads:/directus/uploads
+      - ./cms/extensions:/directus/extensions
+    networks:
+      - arca-cms-network
+    depends_on:
+      - cache
+      - database
+    environment:
+      KEY: 'fcb16531-9c37-4994-b9a0-ed333aa9919d'
+      SECRET: 'f7f98b70-580b-4b46-a1ca-bbbbef903e42'
+
+      DB_CLIENT: 'pg'
+      DB_HOST: 'arca-cms-database'
+      DB_PORT: '5432'
+      DB_DATABASE: 'arca'
+      DB_USER: 'arca'
+      DB_PASSWORD: 'arca'
+
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://cache:6379'
+
+      ADMIN_EMAIL: 'admin@admin.com'
+      ADMIN_PASSWORD: 'admin'
+
+  pgadmin:
+    container_name: arca-cms-pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - 5050:80
+    volumes:
+      - ./cms/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - database
+    networks:
+      - arca-cms-network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
+
+networks:
+  arca-cms-network:

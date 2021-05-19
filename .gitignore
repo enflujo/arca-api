@@ -13,3 +13,7 @@ node_modules
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+/cms/data
+/cms/pgadmin
+/cms/dump
