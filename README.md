@@ -7,7 +7,8 @@ La aplicación para el administrador de contenido del proyecto Arca.
 **Debes tener instalado Docker.**
 
 1. Clonar este repositorio.
-2. Iniciar contenedores:
+2. Pedir el último dump y poner el archivo `.sql` en la carpeta `/cms/dump/` 
+3. Iniciar contenedores:
 
 ```bash
 docker-compose up -d
@@ -21,15 +22,15 @@ Esto va a instalar 4 aplicaciones en 4 contenedores separados que se conectan en
 - **Redis**: El sistema de Cache.
 - **PgAdmin 4**: GUI para trabajar con la base de datos desde [localhost:5050](http://localhost:5050)
 
-### Carpeta `/dump` con archivo `sql`
+### Carpeta `/cms/dump` con archivo `sql`
 
-En la primera vez que iniciamos `docker-compose up`, el archivo que este en `/dump/**.sql` se va a copiar a la carpeta `/docker-entrypoint-initdb.d` dentro del contenedor que tiene el Postgres (base de datos). Al encontrarse con ese archivo en una instalación nueva del contenedor, este se va a saltar los valores predeterminados del `docker-compose` y va a llenar las tablas con los datos y schema del `/dump/**.sql`. Esto significa que toda la configuración de Directus y Colecciones que se han modelado en el, quedan iguales en nuestro Directus de desarrollo local.
+En la primera vez que iniciamos `docker-compose up`, el archivo que este en `/cms/dump/**.sql` se va a copiar a la carpeta `/docker-entrypoint-initdb.d` dentro del contenedor que tiene el Postgres (base de datos). Al encontrarse con ese archivo en una instalación nueva del contenedor, este se va a saltar los valores predeterminados del `docker-compose` y va a llenar las tablas con los datos y schema del `/cms/dump/**.sql`. Esto significa que toda la configuración de Directus y Colecciones que se han modelado en el, quedan iguales en nuestro Directus de desarrollo local.
 
 Esto quiere decir que cuando tenemos un nuevo dump, luego de hacer un adelanto en el modelado de datos o configuración en Directus de manera local, se debe hacer un nuevo dump y compartirlo con los desarrolladores para que puedan volver a instalar el contendedor desde cero.
 
-No es la manera ideal de trabajo y cuando instalemos el CMS en el servidor, esto se vuelve innecesario pues ya quedan los datos centralizados y disponibles a todos. De momento usamos este metodo para darle inicio al desarrollo y primeras pruebas.
+No es la manera ideal de trabajo y cuando instalemos el CMS en el servidor, esto se vuelve innecesario pues ya quedan los datos centralizados y disponibles a todos. De momento usamos este método para darle inicio al desarrollo y primeras pruebas.
 
-#### Reinciar la base de datos con un nuevo dump
+#### Reiniciar la base de datos con un nuevo dump
 
 Apagar los contenedores:
 
@@ -63,7 +64,7 @@ Tener cuidado que esto va a reemplazar el archivo actual.
 
 ### (Opcional) Configuración PgAdmin 4
 
-El administrador de PgAdmin permite tener una interfaz gráfica para ver, modificar y hacer todo tipo de queries directo en la base de datos. Estos se ven reflejados en el Directus. *No es necesario usarlo pero queda incluido para facilitar algunos procesos manuales sobre la base de datos.*
+El administrador de PgAdmin permite tener una interfaz gráfica para ver, modificar y hacer todo tipo de *query* directo en la base de datos. Estos se ven reflejados en el Directus. *No es necesario usarlo pero queda incluido para facilitar algunos procesos manuales sobre la base de datos.*
 
 Para ingresar se debe ir a: [localhost:5050](http://localhost:5050)
 

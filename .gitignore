@@ -16,4 +16,5 @@ Thumbs.db
 
 /cms/data
 /cms/pgadmin
-/cms/dump
+/cms/dump/*
+!/cms/dump/README.md
