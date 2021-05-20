@@ -13,14 +13,18 @@ La aplicación para el administrador de contenido del proyecto Arca.
 ```bash
 docker-compose up -d
 ```
-En la primera iniciada de los contenedores a veces es bueno dejarlo sin `-d` para ir viendo todo el primer proceso de instalación y preparación de los contenedores, si hay errores los vamos a poder ver en el terminal. Pero luego de tenerlos instalados, cada ves que queremos iniciar los contenedores podemos poner el flag `-d` para que el terminal no quede ocupada.
+En la primera iniciada de los contenedores a veces es bueno dejarlo sin `-d` para ir viendo todo el primer proceso de instalación y preparación de los contenedores, si hay errores los vamos a poder ver en el terminal. Pero luego de tenerlos instalados, cada ves que queremos iniciar los contenedores podemos poner el flag `-d` para que el terminal no quede ocupado.
 
 Esto va a instalar 4 aplicaciones en 4 contenedores separados que se conectan entre si (Ver archivo `docker-compose.yml`):
 
-- **Directus**: El CMS disponible en [localhost:8055](http://localhost:8055) (El usuario y clave lo deben pedir en privado).
+- **Directus**: El CMS disponible en [localhost:8055](http://localhost:8055)  
+usuario: **admin@admin.com**   
+clave: **admin**
 - **Postgres**: La base de datos.
 - **Redis**: El sistema de Cache.
-- **PgAdmin 4**: GUI para trabajar con la base de datos desde [localhost:5050](http://localhost:5050)
+- **PgAdmin 4**: GUI para trabajar con la base de datos desde [localhost:5050](http://localhost:5050)  
+usuario: **admin@admin.com**   
+clave: **admin**
 
 ### Carpeta `/cms/dump` con archivo `sql`
 
@@ -95,3 +99,34 @@ Al iniciar los contenedores importamos los datos así que esta conexión nos deb
 ![PgAdmin 4](./docs/pgAdmin-4.png)
 
 Todas las tablas que inician con el nombre `directus_...` corresponden a la configuración del CMS Directus, las otras son las "Colecciones" que se crean y modelan dentro del CMS.
+
+## Ayudas
+
+Algunas notas sobre Docker y docker-compose.
+
+### `volumes` en Docker
+
+Un principio importante en Docker es que los contenedores e imágenes son efímeras, cuando apagamos un contenedor, los datos de éste desaparecen. Para poder persistir los datos (ej. los datos dentro de *Directus*, la configuración en *PgAdmin*) usamos la idea de `volumes`. Estos los podemos pensar como una copia local de alguna carpeta dentro del contenedor. Cuando iniciamos el contenedor, los datos del volumen local se pasan al contenedor y de esta forma persisten durante el desarrollo. **Todas las carpetas locales de nuestros volumenes son ignoradas por git.** ya que le pertenecen a cada uno, pueden jugar, cambiar cosas, luego borra todo y comenzar de cero. 
+
+Estos `volumes` los pueden ver en el `docker-compose.yml` y en las carpetas que se crean en su computador. 
+
+Por ejemplo:
+
+```yml
+volumes:
+  - ./cms/pgadmin:/var/lib/pgadmin
+```
+
+Estos son los que definimos para el contenedor de *PgAdmin*. `./cms/pgadmin` es la carpeta local y `/var/lib/pgadmin` es la carpeta en el contenedor. Siempre van a ver dos rutas separadas por `:` la primera es la local y la segunda es la del contenedor: **`[local]:[contenedor]`**. Si borramos la local e iniciamos el contenedor, desaparece cualquier configuración que hicimos antes y se vuelve a crear la carpeta local, esto es útil cuando queremos comenzar desde cero.
+
+En el caso del contenedor de *PostgresQL* es útil esto ya que cuando queremos cargar un nuevo *dump* de un archivo `.sql` usamos 2 `volumes` para facilitar el proceso.
+
+```yml
+volumes:
+  - ./cms/dump:/docker-entrypoint-initdb.d
+  - ./cms/data:/var/lib/postgresql/data
+```
+
+El archivo `***.sql` que ponemos en la carpeta `/cms/dump` del primer volumen se pasa a la carpeta `/docker-entrypoint-initdb.d` en el contenedor. Esta es una carpeta especial de *postgres* ya que si no existe base de datos y hay archivos `.sql` en esta carpeta, lo usa para crear y llenar la base de datos inicial. Si `/docker-entrypoint-initdb.d` esta vacía, simplemente crea una base de datos vacía. En teoría podemos poner diferentes archivos `.sql` en esta carpeta para correr diferentes procesos al iniciar la base de datos, pero en nuestro caso sólo usamos una que contiene toda la estructura y datos. Por esa razón sólo ponemos 1 archivo (si dejamos varios `.sql` que crean la misma base de datos, va a ejecutar todos y podemos tener resultados inesperados).
+
+Para que importe un nuevo *dump* debemos borrar los datos que existen ya que los `.sql` en `/docker-entrypoint-initdb.d` sólo se ejecutan si no existen datos en el contenedor. Para eso, cuando traemos un nuevo *dump* a `/cms/dump`, debemos borrar el del otro volumen `/cms/data/`. Así el contenedor reconoce que no hay datos, importa los del nuevo *dump* y vuelve a crear la carpeta `/cms/data` localmente con la nueva información.
