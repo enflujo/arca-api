@@ -1,0 +1,61 @@
+version: '3.2'
+
+services:
+  database:
+    container_name: arca-cms-database
+    image: postgres:13
+    restart: unless-stopped
+    volumes:
+      - ./cms/dump:/docker-entrypoint-initdb.d
+      - ./cms/data:/var/lib/postgresql/data
+    networks:
+      - arca-cms-network
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+
+  cache:
+    container_name: arca-cms-cache
+    image: redis:6
+    restart: unless-stopped
+    networks:
+      - arca-cms-network
+
+  directus:
+    container_name: arca-cms
+    image: directus/directus
+    restart: unless-stopped
+    ports:
+      - 8055:8055
+    volumes:
+      - ./cms/uploads:/directus/uploads
+      - ./cms/extensions:/directus/extensions
+    environment:
+      DB_CLIENT: 'pg'
+      DB_HOST: 'arca-cms-database'
+      DB_PORT: '5432'
+      PUBLIC_URL: ${PUBLIC_URL}
+      KEY: ${KEY}
+      SECRET: ${SECRET}
+
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_TRANSPORT: ${EMAIL_TRANSPORT}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
+      EMAIL_SMTP_SECURE: 'true'
+
+      # OAuth para logearse desde una cuenta propia
+
+      OAUTH_PROVIDERS: 'github'
+      OAUTH_GITHUB_KEY: ${GITHUB_OAUTH_CLIENT_ID}
+      OAUTH_GITHUB_SECRET: ${GITHUB_OAUTH_SECRET}
