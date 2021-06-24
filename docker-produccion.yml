@@ -5,6 +5,8 @@ services:
     container_name: arca-cms-database
     image: postgres:13
     restart: unless-stopped
+    ports:
+      - 5432:5432
     volumes:
       - ./cms/dump:/docker-entrypoint-initdb.d
       - ./cms/data:/var/lib/postgresql/data
