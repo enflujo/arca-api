@@ -6,7 +6,7 @@ services:
     image: postgres:13
     restart: unless-stopped
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${DB_PORT}:5432
     volumes:
       - ./cms/dump:/docker-entrypoint-initdb.d
       - ./cms/data:/var/lib/postgresql/data
