@@ -6,7 +6,7 @@ services:
     image: postgres:13
     restart: unless-stopped
     ports:
-      - 5432:5432
+      - ${DB_PORT}:${DB_PORT}
     volumes:
       - ./cms/dump:/docker-entrypoint-initdb.d
       - ./cms/data:/var/lib/postgresql/data
@@ -48,7 +48,7 @@ services:
 
       DB_CLIENT: 'pg'
       DB_HOST: 'arca-cms-database'
-      DB_PORT: '5432'
+      DB_PORT: ${DB_PORT}
       DB_DATABASE: ${DB_DATABASE}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
