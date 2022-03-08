@@ -18,3 +18,4 @@ Thumbs.db
 /cms/pgadmin
 /cms/dump/*
 !/cms/dump/README.md
+/cms/uploads

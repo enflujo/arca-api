@@ -4,7 +4,7 @@ services:
   # ----- CONTENEDOR PARA BASE DE DATOS -----
   database:
     container_name: arca-cms-database
-    image: postgres:13
+    image: postgis/postgis:13-master
     restart: unless-stopped
     ports:
       - 5432:5432
@@ -35,7 +35,6 @@ services:
       - 8055:8055
     volumes:
       - ./cms/uploads:/directus/uploads
-      - ./cms/extensions:/directus/extensions
     networks:
       - arca-cms-network
     depends_on:
