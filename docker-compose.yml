@@ -43,6 +43,8 @@ services:
       PUBLIC_URL: ${CMS_URL}
       KEY: ${CMS_LLAVE}
       SECRET: ${CMS_SECRETO}
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'true'
 
       DB_CLIENT: 'pg'
       DB_HOST: 'arca-cms-bd'
