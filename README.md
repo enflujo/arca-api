@@ -67,6 +67,7 @@ Esto corresponde a:
 - **`arca-cms-bd`**: El nombre del contenedor de Postgres en `docker-compose-yml`. El que se pone en el campo `container_name: "arca-cms-bd"`.
 - **`arca`**: nombre del usuario que en `.env` es `BD_USUARIO=arca`.
 - **`enflujo`**: nombre de la base de datos que en `.env` es `BD_NOMBRE_BD=enflujo`.
+- **`./dump/arcabd.sql`**: Ruta y nombre del archivo sql que se va a exportar.
 
 Tener cuidado que esto va a reemplazar el archivo actual.
 
