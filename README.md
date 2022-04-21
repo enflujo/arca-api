@@ -59,8 +59,14 @@ Esto lo van a hacer luego de que se adelanten cambios importantes en Directus qu
 Teniendo los contenedores prendidos, usar el siguiente comando:
 
 ```bash
-docker exec -t arca-cms-database pg_dump -U arca arca > ./dump/arcabd.sql
+docker exec -t arca-cms-bd pg_dump -U arca enflujo > ./arcabd.sql
 ```
+
+Esto corresponde a:
+
+- **`arca-cms-bd`**: El nombre del contenedor de Postgres en `docker-compose-yml`. El que se pone en el campo `container_name: "arca-cms-bd"`.
+- **`arca`**: nombre del usuario que en `.env` es `BD_USUARIO=arca`.
+- **`enflujo`**: nombre de la base de datos que en `.env` es `BD_NOMBRE_BD=enflujo`.
 
 Tener cuidado que esto va a reemplazar el archivo actual.
 
