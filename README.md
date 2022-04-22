@@ -157,3 +157,11 @@ volumes:
 El archivo `***.sql` que ponemos en la carpeta `/dump` del primer volumen se pasa a la carpeta `/docker-entrypoint-initdb.d` en el contenedor. Esta es una carpeta especial de *postgres* ya que si no existe base de datos y hay archivos `.sql` en esta carpeta, lo usa para crear y llenar la base de datos inicial. Si `/docker-entrypoint-initdb.d` esta vacía, simplemente crea una base de datos vacía. En teoría podemos poner diferentes archivos `.sql` en esta carpeta para correr diferentes procesos al iniciar la base de datos, pero en nuestro caso sólo usamos una que contiene toda la estructura y datos. Por esa razón sólo ponemos 1 archivo (si dejamos varios `.sql` que crean la misma base de datos, va a ejecutar todos y podemos tener resultados inesperados).
 
 Para que importe un nuevo *dump* debemos borrar los datos que existen ya que los `.sql` en `/docker-entrypoint-initdb.d` sólo se ejecutan si no existen datos en el contenedor. Para eso, cuando traemos un nuevo *dump* a `/dump`, debemos borrar el del otro volumen `/datos/`. Así el contenedor reconoce que no hay datos, importa los del nuevo *dump* y vuelve a crear la carpeta `/datos` localmente con la nueva información.
+
+## Linux
+
+Arreglar permiso de volumen.
+
+```bash
+sudo chown -R 1000:1000 uploads
+```
