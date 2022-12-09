@@ -54,7 +54,7 @@ services:
       DB_USER: ${BD_USUARIO}
       DB_PASSWORD: ${BD_CLAVE}
 
-      CACHE_ENABLED: 'false'
+      CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
       CACHE_REDIS: 'redis://cache:6379'
 
