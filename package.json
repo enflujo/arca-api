@@ -1,0 +1,18 @@
+{
+  "name": "arca-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/enflujo/arca-api.git",
+  "author": "Juan Camilo González <j.gonzalezj@uniandes.edu.co>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write --list-different .",
+    "extensiones": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "directus-extension-wpslug-interface": "^1.1.0",
+    "prettier": "^2.8.1"
+  }
+}
