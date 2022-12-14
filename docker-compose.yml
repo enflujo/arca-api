@@ -68,5 +68,7 @@ services:
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USUARIO}
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_CLAVE}
 
+      ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
+
 networks:
   arca-cms-red:
