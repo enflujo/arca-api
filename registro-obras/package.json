@@ -1,0 +1,20 @@
+{
+  "name": "registro-obras",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build --no-minify --watch"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "^9.21.2"
+  },
+  "directus:extension": {
+    "type": "interface",
+    "path": "../extensions/interfaces/registro-obras/index.js",
+    "source": "src/index.js",
+    "host": "^9.21.2",
+    "hidden": false
+  }
+}
