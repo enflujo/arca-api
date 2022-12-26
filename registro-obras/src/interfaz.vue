@@ -36,8 +36,6 @@ export default defineComponent({
         const nuevoValor = +data.data[0].max.registro + 1;
         emit('input', nuevoValor);
       });
-    } else {
-      console.log('Valor ya existe y es', props.value);
     }
   },
 });
