@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  # ----- CONTENEDOR PARA BASE DE DATOS -----
+  bd:
+    container_name: arca-cms-bd
+    image: postgis/postgis:13-master
+    restart: unless-stopped
+    volumes:
+      - ./dump:/docker-entrypoint-initdb.d
+      - ./datos:/var/lib/postgresql/data
+    networks:
+      - arca-cms-red
+    environment:
+      POSTGRES_USER: ${BD_USUARIO}
+      POSTGRES_PASSWORD: ${BD_CLAVE}
+      POSTGRES_DB: ${BD_NOMBRE_BD}
+
+  # ----- CONTENEDOR PARA SISTEMA CACHE -----
+  cache:
+    container_name: arca-cms-cache
+    image: redis:6
+    restart: unless-stopped
+    networks:
+      - arca-cms-red
+
+  # ----- CONTENEDOR PARA CMS -----
+  directus:
+    container_name: arca-cms
+    image: directus/directus
+    restart: unless-stopped
+    ports:
+      - ${CMS_PUERTO}:8055
+    volumes:
+      - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions
+    networks:
+      - arca-cms-red
+    depends_on:
+      - cache
+      - bd
+    environment:
+      PUBLIC_URL: ${CMS_URL}
+      KEY: ${CMS_LLAVE}
+      SECRET: ${CMS_SECRETO}
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'true'
+      LOG_LEVEL: 'trace'
+      # LOG_LEVEL: 'fatal'
+
+      DB_CLIENT: 'pg'
+      DB_HOST: 'arca-cms-bd'
+      DB_PORT: '5432'
+
+      DB_DATABASE: ${BD_NOMBRE_BD}
+      DB_USER: ${BD_USUARIO}
+      DB_PASSWORD: ${BD_CLAVE}
+
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://cache:6379'
+
+      ADMIN_EMAIL: ${CMS_EMAIL}
+      ADMIN_PASSWORD: ${CMS_CLAVE}
+
+      EMAIL_FROM: ${EMAIL_CORREO}
+      EMAIL_TRANSPORT: ${EMAIL_TIPO}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_PROVEEDOR}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PUERTO}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USUARIO}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_CLAVE}
+
+      ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
+
+      EXTENSION_SEARCHSYNC_CONFIG_PATH: './extensions/hooks/searchsync/searchsyncrc.js'
+
+  administrador:
+    container_name: arca-pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    networks:
+      - arca-cms-red
+    depends_on:
+      - bd
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+  meilisearch:
+    container_name: arca-bdbuscador
+    image: getmeili/meilisearch:v0.30
+    restart: unless-stopped
+    volumes:
+      - ./datos-buscador:/meili_data
+    networks:
+      - arca-cms-red
+    depends_on:
+      - bd
+      - directus
+    ports:
+      - '7700:7700'
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+
+networks:
+  arca-cms-red:

@@ -18,3 +18,5 @@ Thumbs.db
 /dump/*
 !/dump/README.md
 /uploads
+/datos-buscador
+/pgadmin

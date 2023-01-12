@@ -8,11 +8,20 @@
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write --list-different .",
-    "extensiones": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
+    "extensiones": "yarn slugs && yarn searchsync",
+    "slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs",
+    "searchsync": "yarn searchsync-eschema && yarn searchsync-hook",
+    "searchsync-eschema": "copyfiles -f ./searchsync/searchsyncrc.js ./extensions/hooks/searchsync",
+    "searchsync-hook": "esbuild ./node_modules/directus-extension-searchsync/index.js --bundle --platform=node --minify --outfile=./extensions/hooks/searchsync/index.js"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "directus-extension-wpslug-interface": "^1.1.0",
+    "dotenv": "^16.0.3",
+    "esbuild": "^0.16.17",
     "prettier": "^2.8.1"
+  },
+  "dependencies": {
+    "directus-extension-searchsync": "https://github.com/dimitrov-adrian/directus-extension-searchsync"
   }
 }

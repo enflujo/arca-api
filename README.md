@@ -7,24 +7,25 @@ La aplicación para el administrador de contenido del proyecto Arca.
 **Debes tener instalado Docker.**
 
 1. Clonar este repositorio.
-2. Pedir el último dump y poner el archivo `.sql` en la carpeta `/dump/` 
+2. Pedir el último dump y poner el archivo `.sql` en la carpeta `/dump/`
 3. Iniciar contenedores:
 
 ```bash
 docker-compose up -d
 ```
+
 En la primera iniciada de los contenedores a veces es bueno dejarlo sin `-d` para ir viendo todo el primer proceso de instalación y preparación de los contenedores, si hay errores los vamos a poder ver en el terminal. Pero luego de tenerlos instalados, cada ves que queremos iniciar los contenedores podemos poner el flag `-d` para que el terminal no quede ocupado.
 
 Esto va a instalar 4 aplicaciones en 4 contenedores separados que se conectan entre si (Ver archivo `docker-compose.yml`):
 
 - **Directus**: El CMS disponible en [localhost:8055](http://localhost:8055)  
-usuario: **admin@admin.com**   
-clave: **admin**
+  usuario: **admin@admin.com**  
+  clave: **admin**
 - **Postgres**: La base de datos.
 - **Redis**: El sistema de Cache.
 - **PgAdmin 4**: GUI para trabajar con la base de datos desde [localhost:5050](http://localhost:5050)  
-usuario: **admin@admin.com**   
-clave: **admin**
+  usuario: **admin@admin.com**  
+  clave: **admin**
 
 ### Carpeta `/dump` con archivo `sql`
 
@@ -59,7 +60,7 @@ Esto lo van a hacer luego de que se adelanten cambios importantes en Directus qu
 Teniendo los contenedores prendidos, usar el siguiente comando:
 
 ```bash
-docker exec -t arca-cms-bd pg_dump -U arca enflujo > ./arcabd.sql
+docker exec -t arca-cms-bd pg_dump -U arca arca > ./arcabd.sql
 ```
 
 Esto corresponde a:
@@ -75,26 +76,26 @@ Tener cuidado que esto va a reemplazar el archivo actual.
 
 ### (Opcional) Configuración PgAdmin 4
 
-El administrador de PgAdmin permite tener una interfaz gráfica para ver, modificar y hacer todo tipo de *query* directo en la base de datos. Estos se ven reflejados en el Directus. *No es necesario usarlo pero queda incluido para facilitar algunos procesos manuales sobre la base de datos.*
+El administrador de PgAdmin permite tener una interfaz gráfica para ver, modificar y hacer todo tipo de _query_ directo en la base de datos. Estos se ven reflejados en el Directus. _No es necesario usarlo pero queda incluido para facilitar algunos procesos manuales sobre la base de datos._
 
 Para instalarlo, agregar el servicio en `docker-compose.yml`:
 
 ```yaml
 pgadmin:
-    container_name: arca-cms-pgadmin
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    ports:
-      - 5050:80
-    volumes:
-      - ./pgadmin:/var/lib/pgadmin
-    depends_on:
-      - database
-    networks:
-      - arca-cms-red
-    environment:
-      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
-      PGADMIN_DEFAULT_PASSWORD: 'admin'
+  container_name: arca-cms-pgadmin
+  image: dpage/pgadmin4
+  restart: unless-stopped
+  ports:
+    - 5050:80
+  volumes:
+    - ./pgadmin:/var/lib/pgadmin
+  depends_on:
+    - database
+  networks:
+    - arca-cms-red
+  environment:
+    PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
+    PGADMIN_DEFAULT_PASSWORD: 'admin'
 ```
 
 Para ingresar se debe ir a: [localhost:5050](http://localhost:5050)
@@ -133,9 +134,9 @@ Algunas notas sobre Docker y docker-compose.
 
 ### `volumes` en Docker
 
-Un principio importante en Docker es que los contenedores e imágenes son efímeras, cuando apagamos un contenedor, los datos de éste desaparecen. Para poder persistir los datos (ej. los datos dentro de *Directus*, la configuración en *PgAdmin*) usamos la idea de `volumes`. Estos los podemos pensar como una copia local de alguna carpeta dentro del contenedor. Cuando iniciamos el contenedor, los datos del volumen local se pasan al contenedor y de esta forma persisten durante el desarrollo. **Todas las carpetas locales de nuestros volumenes son ignoradas por git.** ya que le pertenecen a cada uno, pueden jugar, cambiar cosas, luego borra todo y comenzar de cero. 
+Un principio importante en Docker es que los contenedores e imágenes son efímeras, cuando apagamos un contenedor, los datos de éste desaparecen. Para poder persistir los datos (ej. los datos dentro de _Directus_, la configuración en _PgAdmin_) usamos la idea de `volumes`. Estos los podemos pensar como una copia local de alguna carpeta dentro del contenedor. Cuando iniciamos el contenedor, los datos del volumen local se pasan al contenedor y de esta forma persisten durante el desarrollo. **Todas las carpetas locales de nuestros volumenes son ignoradas por git.** ya que le pertenecen a cada uno, pueden jugar, cambiar cosas, luego borra todo y comenzar de cero.
 
-Estos `volumes` los pueden ver en el `docker-compose.yml` y en las carpetas que se crean en su computador. 
+Estos `volumes` los pueden ver en el `docker-compose.yml` y en las carpetas que se crean en su computador.
 
 Por ejemplo:
 
@@ -144,9 +145,9 @@ volumes:
   - ./pgadmin:/var/lib/pgadmin
 ```
 
-Estos son los que definimos para el contenedor de *PgAdmin*. `./pgadmin` es la carpeta local y `/var/lib/pgadmin` es la carpeta en el contenedor. Siempre van a ver dos rutas separadas por `:` la primera es la local y la segunda es la del contenedor: **`[local]:[contenedor]`**. Si borramos la local e iniciamos el contenedor, desaparece cualquier configuración que hicimos antes y se vuelve a crear la carpeta local, esto es útil cuando queremos comenzar desde cero.
+Estos son los que definimos para el contenedor de _PgAdmin_. `./pgadmin` es la carpeta local y `/var/lib/pgadmin` es la carpeta en el contenedor. Siempre van a ver dos rutas separadas por `:` la primera es la local y la segunda es la del contenedor: **`[local]:[contenedor]`**. Si borramos la local e iniciamos el contenedor, desaparece cualquier configuración que hicimos antes y se vuelve a crear la carpeta local, esto es útil cuando queremos comenzar desde cero.
 
-En el caso del contenedor de *PostgresQL* es útil esto ya que cuando queremos cargar un nuevo *dump* de un archivo `.sql` usamos 2 `volumes` para facilitar el proceso.
+En el caso del contenedor de _PostgresQL_ es útil esto ya que cuando queremos cargar un nuevo _dump_ de un archivo `.sql` usamos 2 `volumes` para facilitar el proceso.
 
 ```yml
 volumes:
@@ -154,9 +155,9 @@ volumes:
   - ./datos:/var/lib/postgresql/data
 ```
 
-El archivo `***.sql` que ponemos en la carpeta `/dump` del primer volumen se pasa a la carpeta `/docker-entrypoint-initdb.d` en el contenedor. Esta es una carpeta especial de *postgres* ya que si no existe base de datos y hay archivos `.sql` en esta carpeta, lo usa para crear y llenar la base de datos inicial. Si `/docker-entrypoint-initdb.d` esta vacía, simplemente crea una base de datos vacía. En teoría podemos poner diferentes archivos `.sql` en esta carpeta para correr diferentes procesos al iniciar la base de datos, pero en nuestro caso sólo usamos una que contiene toda la estructura y datos. Por esa razón sólo ponemos 1 archivo (si dejamos varios `.sql` que crean la misma base de datos, va a ejecutar todos y podemos tener resultados inesperados).
+El archivo `***.sql` que ponemos en la carpeta `/dump` del primer volumen se pasa a la carpeta `/docker-entrypoint-initdb.d` en el contenedor. Esta es una carpeta especial de _postgres_ ya que si no existe base de datos y hay archivos `.sql` en esta carpeta, lo usa para crear y llenar la base de datos inicial. Si `/docker-entrypoint-initdb.d` esta vacía, simplemente crea una base de datos vacía. En teoría podemos poner diferentes archivos `.sql` en esta carpeta para correr diferentes procesos al iniciar la base de datos, pero en nuestro caso sólo usamos una que contiene toda la estructura y datos. Por esa razón sólo ponemos 1 archivo (si dejamos varios `.sql` que crean la misma base de datos, va a ejecutar todos y podemos tener resultados inesperados).
 
-Para que importe un nuevo *dump* debemos borrar los datos que existen ya que los `.sql` en `/docker-entrypoint-initdb.d` sólo se ejecutan si no existen datos en el contenedor. Para eso, cuando traemos un nuevo *dump* a `/dump`, debemos borrar el del otro volumen `/datos/`. Así el contenedor reconoce que no hay datos, importa los del nuevo *dump* y vuelve a crear la carpeta `/datos` localmente con la nueva información.
+Para que importe un nuevo _dump_ debemos borrar los datos que existen ya que los `.sql` en `/docker-entrypoint-initdb.d` sólo se ejecutan si no existen datos en el contenedor. Para eso, cuando traemos un nuevo _dump_ a `/dump`, debemos borrar el del otro volumen `/datos/`. Así el contenedor reconoce que no hay datos, importa los del nuevo _dump_ y vuelve a crear la carpeta `/datos` localmente con la nueva información.
 
 ## Linux
 
@@ -164,4 +165,10 @@ Arreglar permiso de volumen.
 
 ```bash
 sudo chown -R 1000:1000 uploads
+```
+
+En caso de usar versión de desarrollo con pgadmin
+
+```bash
+sudo chown -R 5050:5050 pgadmin
 ```
