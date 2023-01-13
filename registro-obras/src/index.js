@@ -4,7 +4,7 @@ import Componente from './interfaz.vue';
 export default defineInterface({
   id: 'registro-obras',
   name: 'Registro Obras',
-  icon: 'box',
+  icon: 'link',
   description: 'El id original de las imágenes.',
   component: Componente,
   options: null,
