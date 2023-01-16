@@ -172,3 +172,36 @@ En caso de usar versión de desarrollo con pgadmin
 ```bash
 sudo chown -R 5050:5050 pgadmin
 ```
+
+## Buscador
+
+### Mostrar las llaves públicas
+
+Meilisearch crea unas llaves con diferentes permisos, para hacer búsquedas en el front, se debe usar la llave `Default Search API Key`.
+
+En el terminal, imprimir las llaves disponibles:
+
+```bash
+curl \
+  -X GET 'http://localhost:7700/keys?limit=3' \
+  -H 'Authorization: Bearer MEILI_MASTER_KEY'
+```
+
+El resultado imprime un JSON donde podemos ver la llave pública que necesitamos y es segura publicar en el sitio donde implementamos el buscador:
+https://docs.meilisearch.com/learn/security/master_api_keys.html#communicating-with-a-protected-instance
+
+```json
+{
+  "results": [
+    {
+      "name": "Default Search API Key",
+      "description": "Use it to search from the frontend",
+      "key": "...ESTA_ES_LA_LLAVE_PÚBLICA..."
+      // ...
+    }
+  ],
+  "offset": 0,
+  "limit": 3,
+  "total": 2
+}
+```

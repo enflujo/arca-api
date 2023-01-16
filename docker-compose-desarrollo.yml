@@ -73,6 +73,7 @@ services:
       ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
 
       EXTENSION_SEARCHSYNC_CONFIG_PATH: './extensions/hooks/searchsync/searchsyncrc.js'
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
 
   administrador:
     container_name: arca-pgadmin
