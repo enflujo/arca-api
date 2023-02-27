@@ -8,6 +8,7 @@
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write --list-different .",
+    "build": "node extensiones.js",
     "extensiones": "yarn slugs && yarn searchsync",
     "slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs",
     "searchsync": "node extensiones.js"
@@ -18,10 +19,14 @@
     "esbuild": "^0.17.0",
     "esbuild-envfile-plugin": "^1.0.5",
     "esbuild-plugin-copy": "^2.0.1",
+    "esbuild-vue": "^1.2.2",
     "prettier": "^2.8.3"
   },
   "dependencies": {
+    "@directus/extensions-sdk": "^9.22.4",
     "directus-extension-searchsync": "https://github.com/dimitrov-adrian/directus-extension-searchsync",
-    "directus-extension-wpslug-interface": "^1.1.0"
+    "directus-extension-wpslug-interface": "^1.1.0",
+    "esbuild-plugin-vue3": "^0.3.2",
+    "vue": "^3.2.47"
   }
 }
