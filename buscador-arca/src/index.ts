@@ -1,17 +1,26 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { MeiliSearch } from 'meilisearch';
+import { CamposM2M, CamposM2O, CamposSimples, Obra } from './tipos';
 
-const camposPlanos = ['registro', 'titulo', 'sintesis', 'comentario_bibliografico', 'iconotexto'];
+const colecciones = ['obras'];
 
-const camposM2O = [
+const camposPlanos: (keyof CamposSimples)[] = [
+  'registro',
+  'titulo',
+  'sintesis',
+  'comentario_bibliografico',
+  'iconotexto',
+];
+
+const camposM2O: [relacion: string, nuevaLLave?: keyof CamposM2O][] = [
   ['fuente.descripcion', 'fuente'],
   ['imagen.id', 'imagen'],
-  ['categoria1.nombre', 'categoria1'],
-  ['categoria2.nombre', 'categoria2'],
-  ['categoria3.nombre', 'categoria3'],
-  ['categoria4.nombre', 'categoria4'],
-  ['categoria5.nombre', 'categoria5'],
-  ['categoria6.nombre', 'categoria6'],
+  ['categoria1.nombre'],
+  ['categoria2.nombre'],
+  ['categoria3.nombre'],
+  ['categoria4.nombre'],
+  ['categoria5.nombre'],
+  ['categoria6.nombre'],
   ['donante.nombre', 'donante'],
   ['ciudad_origen.nombre', 'ciudad_origen'],
   ['ubicacion.nombre', 'ubicacion'],
@@ -25,31 +34,28 @@ const camposM2O = [
   ['rostro.nombre', 'rostro'],
 ];
 
-const camposM2M = [
-  ['escenarios', 'nombre'],
-  ['objetos', 'nombre'],
-  ['tecnicas', 'nombre'],
-  ['gestos', 'nombre'],
+const camposM2M: [coleccion: keyof Obra, llave: 'nombre' | 'codigo', nuevaLlave?: keyof CamposM2M][] = [
+  ['escenarios', 'nombre', 'escenarios'],
+  ['objetos', 'nombre', 'objetos'],
+  ['tecnicas', 'nombre', 'tecnicas'],
+  ['gestos', 'nombre', 'gestos'],
   ['gestos', 'codigo'],
-  ['personajes', 'nombre'],
-  ['personajes', 'muerte'],
-  ['personajes', 'muerte_anotacion'],
-  ['personajes', 'beatificacion_canonizacion_desde'],
-  ['personajes', 'beatificacion_canonizacion_desde_anotacion'],
-  ['personajes', 'beatificacion_canonizacion_hasta'],
-  ['personajes', 'beatificacion_canonizacion_hasta_anotacion'],
-  ['simbolos', 'nombre'],
-  ['descriptores', 'nombre'],
-  ['caracteristicas', 'nombre'],
+  ['personajes', 'nombre', 'personajes'],
+  ['simbolos', 'nombre', 'simbolos'],
+  ['descriptores', 'nombre', 'descriptores'],
+  ['caracteristicas', 'nombre', 'caracteristicas'],
 ];
 
-export default defineHook(({ action }, { services, getSchema, database, logger }) => {
+export default defineHook(({ action }, { services, getSchema, database }) => {
   const cliente = new MeiliSearch({ host: 'http://arca-bdbuscador:7700', apiKey: '1234' });
   const { ItemsService } = services;
 
   action('server.start', async () => {
+    const { total } = await cliente.index('obras').getDocuments({ limit: 1 });
     const schema = await getSchema();
     const obras = new ItemsService('obras', { schema, knex: database });
+    const coleccionObras = await obras.readByQuery({});
+
     const grupito = await obras.readByQuery({
       limit: 1,
       fields: [
@@ -60,50 +66,7 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
       filter: { estado: { _eq: 'publicado' } },
     });
 
-    const procesado: any = {};
-
-    camposPlanos.forEach((campo) => {
-      if (grupito[0][campo]) {
-        procesado[campo] = grupito[0][campo];
-      }
-    });
-
-    camposM2O.forEach(([campo, nuevaLlave]) => {
-      if (campo && nuevaLlave) {
-        if (nuevaLlave === 'ciudad') {
-          if (grupito[0].ubicacion && grupito[0].ubicacion.ciudad && grupito[0].ubicacion.ciudad.nombre) {
-            procesado.ciudad = grupito[0].ubicacion.ciudad.nombre;
-          }
-        } else if (nuevaLlave === 'pais') {
-          if (
-            grupito[0].ubicacion &&
-            grupito[0].ubicacion.ciudad &&
-            grupito[0].ubicacion.ciudad.pais &&
-            grupito[0].ubicacion.ciudad.pais.nombre
-          ) {
-            procesado.pais = grupito[0].ubicacion.ciudad.pais.nombre;
-          }
-        } else {
-          const [nivel1, llave] = campo.split('.');
-
-          if (nivel1 && llave) {
-            if (grupito[0][nivel1]) {
-              const valor = grupito[0][nivel1][llave];
-
-              if (valor) {
-                procesado[nuevaLlave] = valor;
-              } else {
-                console.log(`campo ${nivel1}.${llave} es null`);
-              }
-            } else {
-              console.log(`campo ${nivel1} es null`);
-            }
-          }
-        }
-      }
-    });
-
-    console.log(procesado);
+    procesarObra(grupito[0]);
 
     // try {
     //   await cliente.index('obras').getRawInfo();
@@ -115,7 +78,7 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
     //   }
     // }
 
-    // const { total } = await cliente.index('obras').getDocuments({ limit: 1 });
+    //
 
     // console.log(total);
 
@@ -123,7 +86,6 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
     // const indiceObras = cliente.deleteIndexIfExists('obras');
     // console.log(indiceObras);
     // cliente.updateIndex('obras', {});
-    console.log(JSON.stringify(grupito, null, 2));
   });
 
   action('items.create', ({ collection, key }) => {
@@ -139,6 +101,117 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
   });
 
   function actualizarObras(coleccion: string, ids: number[]) {
-    console.log('actualizando indice obras', coleccion, ids);
+    if (!colecciones.includes(coleccion)) return;
+    console.log('actualizando registros de', coleccion, ids);
+  }
+
+  function procesarObra(obra: any) {
+    const procesado: any = { registro: obra.registro, titulo: obra.titulo };
+
+    camposPlanos.forEach((campo) => {
+      if (obra[campo]) {
+        procesado[campo] = obra[campo];
+      }
+    });
+
+    camposM2O.forEach(([campo, nuevaLlave]) => {
+      if (campo) {
+        switch (nuevaLlave) {
+          case 'ciudad':
+            if (obra.ubicacion && obra.ubicacion.ciudad && obra.ubicacion.ciudad.nombre) {
+              procesado.ciudad = obra.ubicacion.ciudad.nombre;
+            }
+            break;
+
+          case 'pais':
+            if (
+              obra.ubicacion &&
+              obra.ubicacion.ciudad &&
+              obra.ubicacion.ciudad.pais &&
+              obra.ubicacion.ciudad.pais.nombre
+            ) {
+              procesado.pais = obra.ubicacion.ciudad.pais.nombre;
+            }
+            break;
+          case 'categoria1':
+            if (obra.categoria1 && obra.categoria1.nombre) {
+              if (!procesado.categorias) {
+                procesado.categorias = [];
+              }
+              procesado.categorias.push(obra.categoria1.nombre);
+            }
+            break;
+          case 'categoria2':
+            if (obra.categoria2 && obra.categoria2.nombre) {
+              procesado.categorias?.push(obra.categoria2.nombre);
+            }
+            break;
+          case 'categoria3':
+            if (obra.categoria3 && obra.categoria3.nombre) {
+              procesado.categorias?.push(obra.categoria3.nombre);
+            }
+            break;
+          case 'categoria4':
+            if (obra.categoria4 && obra.categoria4.nombre) {
+              procesado.categorias?.push(obra.categoria4.nombre);
+            }
+            break;
+          case 'categoria5':
+            if (obra.categoria5 && obra.categoria5.nombre) {
+              procesado.categorias?.push(obra.categoria5.nombre);
+            }
+            break;
+          case 'categoria6':
+            if (obra.categoria6 && obra.categoria6.nombre) {
+              procesado.categorias?.push(obra.categoria6.nombre);
+            }
+            break;
+          default:
+            const [nivel1, llave] = campo.split('.');
+
+            if (nivel1 && llave) {
+              const obj = obra[nivel1 as keyof Obra];
+              if (obj && typeof obj === 'object') {
+                const valor: any = obj[llave];
+
+                if (valor && nuevaLlave) {
+                  procesado[nuevaLlave] = valor;
+                } else {
+                  console.log(`campo ${nivel1}.${llave} es null`);
+                }
+              } else {
+                console.log(`campo ${nivel1} es null`);
+              }
+            }
+            break;
+        }
+      }
+    });
+
+    camposM2M.forEach(([nombre, llave, nuevaLlave]) => {
+      if (nombre && llave) {
+        const intermedia = `${nombre}_id`;
+        const tieneValores = obra[nombre] && obra[nombre].length;
+
+        if (nuevaLlave && tieneValores) {
+          obra[nombre].forEach((instancia: any) => {
+            if (instancia[intermedia] && instancia[intermedia][llave]) {
+              if (!procesado[nuevaLlave]) {
+                procesado[nuevaLlave] = [];
+              }
+
+              let valor = instancia[intermedia][llave];
+
+              if (nuevaLlave === 'gestos') {
+                if (instancia[intermedia].codigo) {
+                  valor = `${instancia[intermedia].codigo}: ${valor}`;
+                }
+              }
+              procesado[nuevaLlave].push(valor);
+            }
+          });
+        }
+      }
+    });
   }
 });
