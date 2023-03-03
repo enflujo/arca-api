@@ -1,5 +1,6 @@
 import { defineHook } from '@directus/extensions-sdk';
 import { MeiliSearch } from 'meilisearch';
+import { obtenerMensajeError } from './ayudas';
 import { CamposM2M, CamposM2O, CamposSimples, Obra } from './tipos';
 
 const colecciones = ['obras'];
@@ -15,12 +16,12 @@ const camposPlanos: (keyof CamposSimples)[] = [
 const camposM2O: [relacion: string, nuevaLLave?: keyof CamposM2O][] = [
   ['fuente.descripcion', 'fuente'],
   ['imagen.id', 'imagen'],
-  ['categoria1.nombre'],
-  ['categoria2.nombre'],
-  ['categoria3.nombre'],
-  ['categoria4.nombre'],
-  ['categoria5.nombre'],
-  ['categoria6.nombre'],
+  ['categoria1.nombre', 'categoria1'],
+  ['categoria2.nombre', 'categoria2'],
+  ['categoria3.nombre', 'categoria3'],
+  ['categoria4.nombre', 'categoria4'],
+  ['categoria5.nombre', 'categoria5'],
+  ['categoria6.nombre', 'categoria6'],
   ['donante.nombre', 'donante'],
   ['ciudad_origen.nombre', 'ciudad_origen'],
   ['ubicacion.nombre', 'ubicacion'],
@@ -46,50 +47,70 @@ const camposM2M: [coleccion: keyof Obra, llave: 'nombre' | 'codigo', nuevaLlave?
   ['caracteristicas', 'nombre', 'caracteristicas'],
 ];
 
-export default defineHook(({ action }, { services, getSchema, database }) => {
-  const cliente = new MeiliSearch({ host: 'http://arca-bdbuscador:7700', apiKey: '1234' });
+export default defineHook(({ action }, { services, getSchema, database, logger }) => {
+  const { MEILI_MASTER_KEY } = process.env;
+
+  if (!MEILI_MASTER_KEY) return;
+  const cliente = new MeiliSearch({ host: 'http://arca-bdbuscador:7700', apiKey: MEILI_MASTER_KEY });
   const { ItemsService } = services;
 
   action('server.start', async () => {
     const { total } = await cliente.index('obras').getDocuments({ limit: 1 });
     const schema = await getSchema();
     const obras = new ItemsService('obras', { schema, knex: database });
-    const coleccionObras = await obras.readByQuery({});
+    const conteoObras = await obras.readByQuery({
+      filter: { estado: { _eq: 'publicado' } },
+      aggregate: { count: ['*'] },
+    });
+    const totalObras = +conteoObras[0].count;
 
-    const grupito = await obras.readByQuery({
-      limit: 1,
-      fields: [
+    if (+total !== totalObras) {
+      try {
+        await cliente.deleteIndexIfExists('obras');
+      } catch (error) {
+        logger.warn(`No se puede borrar colección "obras" de meilisearch: ${obtenerMensajeError(error)}`);
+        logger.debug(error);
+      }
+
+      try {
+        await cliente.createIndex('obras', { primaryKey: 'registro' });
+      } catch (error) {
+        logger.warn(`No se puede crear colección "obras" de meilisearch: ${obtenerMensajeError(error)}`);
+        logger.debug(error);
+      }
+
+      const limite = 100;
+      const paginas = Math.ceil(totalObras / limite);
+      const campos = [
         ...camposPlanos,
         ...camposM2O.map((campo) => campo[0]),
         ...camposM2M.map((campo) => `${campo[0]}.${campo[0]}_id.${campo[1]}`),
-      ],
-      filter: { estado: { _eq: 'publicado' } },
-    });
+      ];
 
-    procesarObra(grupito[0]);
+      for (let pagina = 0; pagina < paginas; pagina++) {
+        const grupoObras = await obras.readByQuery({
+          filter: { estado: { _eq: 'publicado' } },
+          limit: limite,
+          offset: pagina * limite,
+          fields: campos,
+        });
 
-    // try {
-    //   await cliente.index('obras').getRawInfo();
-    // } catch (error) {
-    //   try {
-    //     await cliente.createIndex('obras', { primaryKey: 'registro' });
-    //   } catch (error) {
-    //     logger.warn(error);
-    //   }
-    // }
+        if (!grupoObras || !grupoObras.length) break;
 
-    //
+        const datosProcesados = grupoObras.map((obra: Obra) => procesarObra(obra));
 
-    // console.log(total);
-
-    // console.log(schema.collections.obras);
-    // const indiceObras = cliente.deleteIndexIfExists('obras');
-    // console.log(indiceObras);
-    // cliente.updateIndex('obras', {});
+        await cliente.index('obras').addDocuments(datosProcesados);
+      }
+      logger.info('Colección "obras" indexada en la base de datos del buscador');
+    }
   });
 
-  action('items.create', ({ collection, key }) => {
-    actualizarObras(collection, [key]);
+  action('items.create', ({ colection, payload }) => {
+    // actualizarObras(collection, [key]);
+    if (colection === 'obras') {
+      const datosProcesados = procesarObra(payload);
+      cliente.index('obras').addDocuments([datosProcesados]);
+    }
   });
 
   action('items.update', ({ collection, keys }) => {
@@ -176,11 +197,7 @@ export default defineHook(({ action }, { services, getSchema, database }) => {
 
                 if (valor && nuevaLlave) {
                   procesado[nuevaLlave] = valor;
-                } else {
-                  console.log(`campo ${nivel1}.${llave} es null`);
                 }
-              } else {
-                console.log(`campo ${nivel1} es null`);
               }
             }
             break;
@@ -213,5 +230,13 @@ export default defineHook(({ action }, { services, getSchema, database }) => {
         }
       }
     });
+
+    for (const campo in procesado) {
+      if (typeof procesado[campo] === 'object') {
+        procesado[campo] = procesado[campo].join(', ');
+      }
+    }
+
+    return procesado;
   }
 });
