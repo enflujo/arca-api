@@ -1,5 +1,5 @@
 import { defineInterface } from '@directus/extensions-sdk';
-import Componente from './interfaz.vue';
+import Componente from './Interfaz.vue';
 
 export default defineInterface({
   id: 'registro-obras',

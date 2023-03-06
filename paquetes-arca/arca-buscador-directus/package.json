@@ -1,0 +1,17 @@
+{
+  "name": "arca-buscador-directus",
+  "version": "1.0.0",
+  "description": "Interface para obtener información del estado de Meilisearch dentro de Directus.",
+  "license": "MIT",
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link"
+  },
+  "directus:extension": {
+    "type": "module",
+    "path": "../../extensions/modules/arca-buscador-directus/index.js",
+    "source": "src/index.ts",
+    "host": "^9.23.1"
+  }
+}

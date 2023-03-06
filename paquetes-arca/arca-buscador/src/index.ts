@@ -50,14 +50,22 @@ const camposM2M: [coleccion: keyof Obra, llave: 'nombre' | 'codigo' | 'apellido'
 ];
 
 export default defineHook(({ action }, { services, getSchema, database, logger }) => {
-  const { MEILI_MASTER_KEY } = process.env;
+  const { MEILI_MASTER_KEY, MEILI_BD_URL } = process.env;
 
-  if (!MEILI_MASTER_KEY) return;
-  const cliente = new MeiliSearch({ host: 'http://arca-bdbuscador:7700', apiKey: MEILI_MASTER_KEY });
+  if (!MEILI_MASTER_KEY && !MEILI_BD_URL) return;
+  const cliente = new MeiliSearch({ host: `http://${MEILI_BD_URL}:7700`, apiKey: MEILI_MASTER_KEY });
+
   const { ItemsService } = services;
 
   action('server.start', async () => {
-    const { total } = await cliente.index('obras').getDocuments({ limit: 1 });
+    let total = 0;
+    try {
+      const conteoIndiceObras = await cliente.index('obras').getDocuments({ limit: 1 });
+      total = conteoIndiceObras.total;
+    } catch (error) {
+      logger.info(`Creando indice "obras" en meilisearch`);
+    }
+
     const schema = await getSchema();
     const obras = new ItemsService('obras', { schema, knex: database });
     const conteoObras = await obras.readByQuery({
@@ -65,8 +73,6 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
       aggregate: { count: ['*'] },
     });
     const totalObras = +conteoObras[0].count;
-
-    console.log(totalObras, total);
 
     if (+total !== totalObras) {
       try {
@@ -81,6 +87,7 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
       } catch (error) {
         logger.warn(`No se puede crear colección "obras" de meilisearch: ${obtenerMensajeError(error)}`);
         logger.debug(error);
+        process.exit(0);
       }
 
       const limite = 100;
