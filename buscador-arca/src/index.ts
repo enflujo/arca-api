@@ -35,7 +35,9 @@ const camposM2O: [relacion: string, nuevaLLave?: keyof CamposM2O][] = [
   ['rostro.nombre', 'rostro'],
 ];
 
-const camposM2M: [coleccion: keyof Obra, llave: 'nombre' | 'codigo', nuevaLlave?: keyof CamposM2M][] = [
+const camposM2M: [coleccion: keyof Obra, llave: 'nombre' | 'codigo' | 'apellido', nuevaLlave?: keyof CamposM2M][] = [
+  ['autores', 'nombre', 'autores'],
+  ['autores', 'apellido'],
   ['escenarios', 'nombre', 'escenarios'],
   ['objetos', 'nombre', 'objetos'],
   ['tecnicas', 'nombre', 'tecnicas'],
@@ -63,6 +65,8 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
       aggregate: { count: ['*'] },
     });
     const totalObras = +conteoObras[0].count;
+
+    console.log(totalObras, total);
 
     if (+total !== totalObras) {
       try {
@@ -98,9 +102,9 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
         if (!grupoObras || !grupoObras.length) break;
 
         const datosProcesados = grupoObras.map((obra: Obra) => procesarObra(obra));
-
         await cliente.index('obras').addDocuments(datosProcesados);
       }
+
       logger.info('Colección "obras" indexada en la base de datos del buscador');
     }
   });
@@ -109,6 +113,7 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
     // actualizarObras(collection, [key]);
     if (colection === 'obras') {
       const datosProcesados = procesarObra(payload);
+      // console.log(datosProcesados);
       cliente.index('obras').addDocuments([datosProcesados]);
     }
   });
@@ -223,7 +228,15 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
                 if (instancia[intermedia].codigo) {
                   valor = `${instancia[intermedia].codigo}: ${valor}`;
                 }
+              } else if (nuevaLlave === 'autores') {
+                const nombreCompleto = [];
+
+                if (valor) nombreCompleto.push(valor);
+                if (instancia[intermedia].apellido) nombreCompleto.push(instancia[intermedia].apellido);
+
+                valor = nombreCompleto.join(' ');
               }
+
               procesado[nuevaLlave].push(valor);
             }
           });

@@ -132,6 +132,7 @@ export interface CamposM2O {
 }
 
 export interface CamposM2M {
+  autores?: string[];
   escenarios?: string[];
   objetos?: string[];
   tecnicas?: string[];
