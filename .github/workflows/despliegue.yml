@@ -20,5 +20,8 @@ jobs:
             cd ${{ secrets.RUTA }}
             git pull
             docker compose down
+            yarn install --frozen-lockfile
+            yarn limpiar
+            yarn build
             docker compose pull
             docker compose up -d
