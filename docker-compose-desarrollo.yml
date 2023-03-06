@@ -3,14 +3,14 @@ version: '3.9'
 services:
   # ----- CONTENEDOR PARA BASE DE DATOS -----
   bd:
-    container_name: arca-cms-bd
+    container_name: arca-cms-bd-desarrollo
     image: postgis/postgis:13-master
     restart: unless-stopped
     volumes:
       - ./dump:/docker-entrypoint-initdb.d
       - ./datos:/var/lib/postgresql/data
     networks:
-      - arca-cms-red
+      - arca-cms-red-desarrollo
     environment:
       POSTGRES_USER: ${BD_USUARIO}
       POSTGRES_PASSWORD: ${BD_CLAVE}
@@ -18,15 +18,15 @@ services:
 
   # ----- CONTENEDOR PARA SISTEMA CACHE -----
   cache:
-    container_name: arca-cms-cache
+    container_name: arca-cms-cache-desarrollo
     image: redis:6
     restart: unless-stopped
     networks:
-      - arca-cms-red
+      - arca-cms-red-desarrollo
 
   # ----- CONTENEDOR PARA CMS -----
   directus:
-    container_name: arca-cms
+    container_name: arca-cms-desarrollo
     image: directus/directus
     restart: unless-stopped
     ports:
@@ -35,7 +35,7 @@ services:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
     networks:
-      - arca-cms-red
+      - arca-cms-red-desarrollo
     depends_on:
       - cache
       - bd
@@ -49,7 +49,7 @@ services:
       # LOG_LEVEL: 'fatal'
 
       DB_CLIENT: 'pg'
-      DB_HOST: 'arca-cms-bd'
+      DB_HOST: 'arca-cms-bd-desarrollo'
       DB_PORT: '5432'
 
       DB_DATABASE: ${BD_NOMBRE_BD}
@@ -71,18 +71,17 @@ services:
       # EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_CLAVE}
 
       ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
-
-      EXTENSION_SEARCHSYNC_CONFIG_PATH: './extensions/hooks/searchsync/searchsyncrc.js'
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_BD_URL: 'arca-bdbuscador-desarrollo'
 
   administrador:
-    container_name: arca-pgadmin
+    container_name: arca-pgadmin-desarrollo
     image: dpage/pgadmin4
     restart: unless-stopped
     volumes:
       - ./pgadmin:/var/lib/pgadmin
     networks:
-      - arca-cms-red
+      - arca-cms-red-desarrollo
     depends_on:
       - bd
     ports:
@@ -92,13 +91,13 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
 
   meilisearch:
-    container_name: arca-bdbuscador
-    image: getmeili/meilisearch:v0.30
+    container_name: arca-bdbuscador-desarrollo
+    image: getmeili/meilisearch:v1.0
     restart: unless-stopped
     volumes:
-      - ./datos-buscador:/meili_data
+      - ./datos-buscador-desarrollo:/meili_data
     networks:
-      - arca-cms-red
+      - arca-cms-red-desarrollo
     depends_on:
       - bd
       - directus
@@ -108,4 +107,4 @@ services:
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
 
 networks:
-  arca-cms-red:
+  arca-cms-red-desarrollo:
