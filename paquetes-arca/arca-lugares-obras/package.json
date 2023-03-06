@@ -1,0 +1,17 @@
+{
+  "name": "arca-lugares-obras",
+  "version": "1.0.0",
+  "description": "Sincroniza obras con las colecciones países y ciudades.",
+  "license": "MIT",
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link"
+  },
+  "directus:extension": {
+    "type": "hook",
+    "path": "../../extensions/hooks/arca-lugares-obras/index.js",
+    "source": "src/index.ts",
+    "host": "^9.23.1"
+  }
+}

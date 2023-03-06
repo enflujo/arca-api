@@ -6,7 +6,6 @@ export default defineHook(({ action }, { services }) => {
 
   action('obras.items.create', despliegue);
   action('obras.items.update', despliegue);
-  action('obras.items.delete', despliegue);
 
   async function despliegue(evento: Record<string, any>, contexto: EventContext) {
     // Sólo activar este despliegue de datos si la acción es de un usuario en la interfaz, no hay "accountability" si es por medio de este Hook.
@@ -42,7 +41,7 @@ export default defineHook(({ action }, { services }) => {
           fields: ['ciudad.id', 'ciudad.pais'],
         });
 
-        // Agregar ciudad y país a la obra. Esto autmaticamente agrega la obra a las tablas de esa ciuda y país.
+        // Agregar ciudad y país a la obra. Esto automáticamente agrega la obra a las tablas de esa ciudad y país.
         if (datosUbicacion && datosUbicacion.length) {
           const { ciudad } = datosUbicacion[0];
 

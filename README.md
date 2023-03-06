@@ -1,5 +1,10 @@
 # Arca API
 
+![Estilo Código](https://github.com/enflujo/arca-api/actions/workflows/estilo-codigo.yml/badge.svg)
+![Despliegue](https://github.com/enflujo/arca-api/actions/workflows/despliegue.yml/badge.svg)
+![Tamaño](https://img.shields.io/github/repo-size/enflujo/arca-api?color=%235757f7&label=Tama%C3%B1o%20repo&logo=open-access&logoColor=white)
+![Licencia](https://img.shields.io/github/license/enflujo/arca-api?label=Licencia&logo=open-source-initiative&logoColor=white)
+
 La aplicación para el administrador de contenido del proyecto Arca.
 
 ## Instalación
@@ -204,4 +209,12 @@ https://docs.meilisearch.com/learn/security/master_api_keys.html#communicating-w
   "limit": 3,
   "total": 2
 }
+```
+
+## Instalar paquetes en _Yarn Workspace_
+
+Paquete que compartes todos:
+
+```bash
+yarn add NOMBRE_EXTENSION -W
 ```

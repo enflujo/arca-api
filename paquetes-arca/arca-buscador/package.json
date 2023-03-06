@@ -1,0 +1,20 @@
+{
+  "name": "arca-buscador",
+  "version": "1.0.0",
+  "description": "Hook de Directus para crear espejo de la base de datos en Meilisearch.",
+  "license": "MIT",
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link"
+  },
+  "directus:extension": {
+    "type": "hook",
+    "path": "../../extensions/hooks/arca-buscador/index.js",
+    "source": "src/index.ts",
+    "host": "^9.23.1"
+  },
+  "dependencies": {
+    "meilisearch": "^0.31.1"
+  }
+}

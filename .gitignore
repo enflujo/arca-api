@@ -15,8 +15,13 @@ ehthumbs.db
 Thumbs.db
 
 /datos
+/datos-desarrollo
 /dump/*
 !/dump/README.md
 /uploads
 /datos-buscador
+/datos-buscador-desarrollo
 /pgadmin
+/extensions/hooks
+/extensions/interfaces
+/extensions/modules
