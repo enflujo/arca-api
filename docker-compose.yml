@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.9'
 
 services:
   # ----- CONTENEDOR PARA BASE DE DATOS -----
@@ -69,6 +69,27 @@ services:
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_CLAVE}
 
       ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_BD_URL: 'arca-bdbuscador'
+
+  # ----- CONTENEDOR PARA CMS -----
+  buscador:
+    container_name: arca-bdbuscador
+    image: getmeili/meilisearch:v1.0
+    restart: unless-stopped
+    volumes:
+      - ./datos-buscador:/meili_data
+    networks:
+      - arca-cms-red
+    depends_on:
+      - bd
+      - directus
+    ports:
+      - ${MEILI_PUERTO}:7700
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_ENV: 'production'
+      MEILI_NO_ANALYTICS: true
 
 networks:
   arca-cms-red:

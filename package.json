@@ -10,7 +10,7 @@
     "paquetes-arca/*"
   ],
   "scripts": {
-    "lint": "prettier --check .",
+    "lint": "prettier --check . '!./datos' '!./datos-buscador' '!./datos-buscador-desarrollo' '!./pgadmin' '!./extensions'",
     "lint:fix": "prettier --write --list-different .",
     "limpiar": "run-s --print-label limpiar:*",
     "limpiar:hooks": "rimraf extensions/hooks/",
@@ -33,6 +33,7 @@
     "@types/node": "^18.14.6",
     "copyfiles": "^2.4.1",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
     "typescript": "^4.9.5"
   },
   "dependencies": {

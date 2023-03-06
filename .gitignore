@@ -22,3 +22,6 @@ Thumbs.db
 /datos-buscador
 /datos-buscador-desarrollo
 /pgadmin
+/extensions/hooks
+/extensions/interfaces
+/extensions/modules

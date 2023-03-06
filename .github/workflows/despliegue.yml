@@ -1,0 +1,24 @@
+name: Despliegue
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: 🐘 Desplegar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🦅 Actualizar build por SSH
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.DOMINIO }}
+          username: ${{ secrets.USUARIO }}
+          key: ${{ secrets.LLAVE_SSH }}
+          script: |
+            cd ${{ secrets.RUTA }}
+            git pull
+            docker compose down
+            docker compose pull
+            docker compose up -d
