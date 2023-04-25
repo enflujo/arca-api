@@ -29,15 +29,15 @@
     "build:slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "^9.23.1",
-    "@types/node": "^18.14.6",
+    "@directus/extensions-sdk": "^9.26.0",
+    "@types/node": "^18.16.0",
     "copyfiles": "^2.4.1",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
   },
   "dependencies": {
     "directus-extension-wpslug-interface": "^1.1.0",
-    "rimraf": "^4.3.1"
+    "rimraf": "^5.0.0"
   }
 }
