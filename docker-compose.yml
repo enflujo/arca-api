@@ -46,6 +46,8 @@ services:
       CORS_ENABLED: 'true'
       CORS_ORIGIN: 'true'
 
+      LOG_LEVEL: 'error'
+
       DB_CLIENT: 'pg'
       DB_HOST: 'arca-cms-bd'
       DB_PORT: '5432'
