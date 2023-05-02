@@ -92,7 +92,7 @@ services:
 
   meilisearch:
     container_name: arca-bdbuscador-desarrollo
-    image: getmeili/meilisearch:v1.0
+    image: getmeili/meilisearch:v1.1
     restart: unless-stopped
     volumes:
       - ./datos-buscador-desarrollo:/meili_data

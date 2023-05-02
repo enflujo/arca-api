@@ -213,7 +213,7 @@ https://docs.meilisearch.com/learn/security/master_api_keys.html#communicating-w
 
 ## Instalar paquetes en _Yarn Workspace_
 
-Paquete que compartes todos:
+Paquete que comparten todos:
 
 ```bash
 yarn add NOMBRE_EXTENSION -W

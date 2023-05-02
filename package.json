@@ -18,19 +18,22 @@
     "limpiar:modules": "rimraf extensions/modules/",
     "dev": "run-p --print-label dev:*",
     "dev:buscador": "yarn workspace arca-buscador dev",
-    "dev_:buscador-directus": "yarn workspace arca-buscador-directus dev",
+    "dev:buscador-directus": "yarn workspace arca-buscador-directus dev",
     "dev:registros": "yarn workspace arca-registros dev",
     "dev:lugares": "yarn workspace arca-lugares-obras dev",
+    "dev:datos": "yarn workspace arca-datos dev",
     "build": "run-s --print-label build:*",
     "build:buscador": "yarn workspace arca-buscador build",
     "build_:buscador-directus": "yarn workspace arca-buscador-directus build",
     "build:registros": "yarn workspace arca-registros build",
     "build:lugares": "yarn workspace arca-lugares-obras build",
+    "build:datos": "yarn workspace arca-datos build",
     "build:slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "^9.26.0",
-    "@types/node": "^18.16.0",
+    "@directus/extensions-sdk": "^10.0.0",
+    "@types/node": "^18.16.3",
+    "@types/pino": "^7.0.5",
     "copyfiles": "^2.4.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
@@ -38,6 +41,7 @@
   },
   "dependencies": {
     "directus-extension-wpslug-interface": "^1.1.0",
+    "meilisearch": "^0.32.3",
     "rimraf": "^5.0.0"
   }
 }
