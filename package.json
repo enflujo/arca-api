@@ -16,6 +16,7 @@
     "limpiar:hooks": "rimraf extensions/hooks/",
     "limpiar:interfaces": "rimraf extensions/interfaces/",
     "limpiar:modules": "rimraf extensions/modules/",
+    "limpiar:endpoints": "rimraf extensions/endpoints/",
     "dev": "run-p --print-label dev:*",
     "dev:buscador": "yarn workspace arca-buscador dev",
     "dev:buscador-directus": "yarn workspace arca-buscador-directus dev",

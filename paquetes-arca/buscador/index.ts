@@ -6,6 +6,7 @@ import { Obra } from './tipos';
 import procesarObra from './procesarObra';
 
 let instanciaBuscador: MeiliSearch;
+let creandoDocumentos = false;
 
 export function clienteBuscador() {
   if (!instanciaBuscador) {
@@ -38,8 +39,21 @@ export async function existeIndiceObras() {
 }
 
 export async function crearIndiceObras(obras: any, logger: Logger) {
+  // Si ya se esta creando la base de datos.
+  if (creandoDocumentos)
+    return {
+      tipo: 'warning',
+      mensaje: 'Se están procesando los datos, esperar a que termine el proceso.',
+      codigo: 204,
+    };
+
   const cliente = clienteBuscador();
-  if (!cliente) return;
+  if (!cliente)
+    return {
+      tipo: 'danger',
+      mensaje: 'Parece que Meilisearch no está corriendo, revisar el estado de la aplicación en el servidor.',
+      codigo: 500,
+    };
 
   const conteoObras = await obras.readByQuery({
     filter: { estado: { _eq: 'publicado' } },
@@ -50,16 +64,20 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
   try {
     await cliente.deleteIndexIfExists('obras');
   } catch (error) {
-    logger.warn(`No se puede borrar colección "obras" de meilisearch: ${obtenerMensajeError(error)}`);
+    const mensaje = `No se puede borrar colección "obras" de meilisearch: ${obtenerMensajeError(error)}`;
+    logger.warn(mensaje);
     logger.debug(error);
+    return { tipo: 'danger', mensaje, codigo: 500 };
   }
 
   try {
     await cliente.createIndex('obras', { primaryKey: 'registro' });
   } catch (error) {
-    logger.warn(`No se puede crear colección "obras" de meilisearch: ${obtenerMensajeError(error)}`);
+    const mensaje = `No se puede crear colección "obras" de meilisearch: ${obtenerMensajeError(error)}`;
+    logger.warn(mensaje);
     logger.debug(error);
-    process.exit(0);
+
+    return { tipo: 'danger', mensaje, codigo: 500 };
   }
 
   const limite = 100;
@@ -69,6 +87,8 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
     ...camposM2O.map((campo) => campo[0]),
     ...camposM2M.map((campo) => `${campo[0]}.${campo[0]}_id.${campo[1]}`),
   ];
+
+  creandoDocumentos = true;
 
   for (let pagina = 0; pagina <= paginas; pagina++) {
     const grupoObras = await obras.readByQuery({
@@ -93,7 +113,9 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
     await cliente.index('obras').addDocuments(datosProcesados);
   }
 
+  creandoDocumentos = false;
   logger.info('Colección "obras" indexada en la base de datos del buscador');
+  return { tipo: 'success', mensaje: 'Obras indexadas con éxito.', codigo: 200 };
 }
 
 export function estadoInstanciaBuscador() {

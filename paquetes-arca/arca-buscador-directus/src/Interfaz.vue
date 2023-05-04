@@ -6,7 +6,7 @@
       <v-card>
         <v-card-title>Llave pública del buscador</v-card-title>
         <v-card-text>
-          Esta es la llave que se debe usar en el "fron-end" para acceder a los datos de meilisearch.
+          Esta es la llave que se debe usar en el "fron-end" para acceder a los datos de Meilisearch.
         </v-card-text>
       </v-card>
 
@@ -14,12 +14,20 @@
         <template #prepend><v-icon name="vpn_key" /></template>
       </v-input>
 
+      <v-divider></v-divider>
+
       <v-card>
-        <v-card-title>Reiniciar base de datos</v-card-title>
-        <v-card-text> </v-card-text>
+        <v-card-title>Recrear base de datos del buscador</v-card-title>
+        <v-card-text
+          >La base de datos del buscador se puede eliminar y recrear en cualquier momento en caso de que los datos estén
+          presentando problemas. Este proceso puede ser lento.</v-card-text
+        >
       </v-card>
+      <v-progress-circular v-if="procesando" indeterminate />
+      <v-info icon="person" :title="resultado.tipo" type="warning">{{ resultado.mensaje }}</v-info>
+
       <v-button v-on:click="indexar">Reiniciar</v-button>
-      <v-divider>New Section</v-divider>
+
       <v-button v-on:click="estado">Estado</v-button>
     </div>
   </private-view>
@@ -35,14 +43,18 @@ export default defineComponent({
       obrasIndexadas: 0,
       llavePublica: '',
       version: null,
+      procesando: false,
+      resultado: { tipo: 'Error', mensaje: 'esto es un mensaje del servidor', codigo: 0 },
     };
   },
 
   inject: ['api'],
   methods: {
     async indexar() {
+      this.procesando = true;
       const respuesta = await this.api('/arca-datos/reindexar');
       console.log(respuesta.data);
+      this.procesando = false;
     },
 
     async estado() {
@@ -50,10 +62,13 @@ export default defineComponent({
       console.log(respuesta.data);
     },
   },
+
   async mounted() {
     const { data: llave } = await this.api('/arca-datos/llave-buscador');
     const { data: version } = await this.api('/arca-datos/version-buscador');
+
     this.llavePublica = llave ? llave : '';
+
     if (version && version.pkgVersion) {
       this.version = version.pkgVersion;
     }
@@ -84,6 +99,10 @@ export default defineComponent({
 <style scoped>
 .contenido {
   padding: 0 var(--content-padding);
+}
+
+.v-divider {
+  margin: 2em 0;
 }
 
 .v-card {

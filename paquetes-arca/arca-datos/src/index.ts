@@ -39,8 +39,8 @@ export default defineEndpoint((router, { services, logger }) => {
     }
 
     const obras = new ItemsService('obras', { schema: peticion.schema, accountability: peticion.accountability });
-    await crearIndiceObras(obras, logger);
-    respuesta.send('listo');
+    const proceso = await crearIndiceObras(obras, logger);
+    respuesta.send(proceso);
   });
 
   router.get('/estado-buscador', async (peticion: any, respuesta: Respuesta) => {
