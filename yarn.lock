@@ -28,33 +28,33 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.21.2.tgz#dacafadfc6d7654c3051a66d6fe55b6cb2f2a0b3"
   integrity sha512-URpaIJQwEkEC2T9Kn+Ai6Xe/02iNaVCuT/PtoRz3GPVJVDpPd7mLo+VddTbhCRU9TXqW5mSrQfXZyi8kDKOVpQ==
 
-"@directus/composables@10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@directus/composables/-/composables-10.0.0.tgz#24fa9449b0d3bca840108a0023c61f1be4a1164d"
-  integrity sha512-/Z8DNcWIKMHbAXPLpIjgcyCPenbvT9jO7MoN7h+rqoYqQYK80e2c7/4wFiTLHO5fKDtWtNpKiPWIlkAMGTRPLA==
+"@directus/composables@10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@directus/composables/-/composables-10.0.1.tgz#114ee8ade2dfd52c4b726e56bb5ab1aed01d6933"
+  integrity sha512-ZdVLzMe1tXidwEIWNiDjIj+6l9TRYqh1SN5O9yBXgNcQPvLa5R+bSOfKkhi7AywTXycs21XENKyuuupNllvQ7w==
   dependencies:
-    "@directus/constants" "10.0.0"
-    "@directus/utils" "10.0.0"
+    "@directus/constants" "10.1.0"
+    "@directus/utils" "10.0.1"
     lodash-es "4.17.21"
     nanoid "4.0.2"
     vue "3.2.47"
 
-"@directus/constants@10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@directus/constants/-/constants-10.0.0.tgz#9af669ea315e040677fe3c449fc975305ded6c1e"
-  integrity sha512-8lTrIsxOt6rjCdQA1QWiDi7AYU6/RiOMgyISWcVW0v4uAaWUsm3sE1gV1L7ure13oulP8sKxTzSMXzWiSmabVw==
+"@directus/constants@10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@directus/constants/-/constants-10.1.0.tgz#7f5b3c2bc9545cd27aaa9deab8e9b4903919f0d6"
+  integrity sha512-yWMwCKcoc9oboTs6aTQiPxoIACPxqrmTCSPpZJzSz/xhVvn2ltdWZzHh+Hy0KczQHWqCcoBiSueBj8o+NBo5YQ==
   dependencies:
     zod "3.21.4"
 
-"@directus/extensions-sdk@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@directus/extensions-sdk/-/extensions-sdk-10.0.0.tgz#a6f5df0e8c80b259a47834fb49ceb9c6c9268924"
-  integrity sha512-Va0dasAZNy4icE8mBMfpBlzYvk95YBSeDLmNNr8khpG+8kSyTtlB2KpLOT6Rl2huNNtzJbEjvh5/hYkqqCJPew==
+"@directus/extensions-sdk@^10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@directus/extensions-sdk/-/extensions-sdk-10.1.0.tgz#d18dcad0a631c74f8055a4cf065b9ab65e30f62c"
+  integrity sha512-23XugqkmC1eUUnry/cwSVe9yVlZhMeWzGYuJx963X8eHExLPtW21JMDEI1WgZIQREKNkffRpibUrW/shpaBqFg==
   dependencies:
-    "@directus/composables" "10.0.0"
-    "@directus/constants" "10.0.0"
+    "@directus/composables" "10.0.1"
+    "@directus/constants" "10.1.0"
     "@directus/types" "10.0.0"
-    "@directus/utils" "10.0.0"
+    "@directus/utils" "10.0.1"
     "@rollup/plugin-commonjs" "24.1.0"
     "@rollup/plugin-json" "6.0.0"
     "@rollup/plugin-node-resolve" "15.0.2"
@@ -74,23 +74,17 @@
     rollup-plugin-styles "4.0.0"
     rollup-plugin-vue "6.0.0"
 
-"@directus/storage@10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@directus/storage/-/storage-10.0.0.tgz#856dccdff8180ff2fc993fa9f6a55898e8ee7106"
-  integrity sha512-OMXaIgScvEvGSCTk8VOB8mzZ9jDSYFJP5JXAkCTF0M4mMvPNRjQFj8hop7YHZLqRkcYuQRuZqlMrobk72A7kXA==
-
 "@directus/types@10.0.0":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@directus/types/-/types-10.0.0.tgz#4f3adba3fb4be3c4cdc6629179e97f4771311812"
   integrity sha512-q78E5wW16LEBZfTft4yxY3hiEjdDzRG7H9ytx8G3lbclQFhYjml3PeqrXI7HzrDgwXozZm1/loC7zuVIYfbFQw==
 
-"@directus/utils@10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@directus/utils/-/utils-10.0.0.tgz#a0ca816e6a9eca43333351a11905bec7d085adf5"
-  integrity sha512-nMeys+7O3+rYpsYOtFYrdBPv02sFnaEh52j7kjDLo3a9nPgnjC5b9Wo13eaYAuTyL6TmQUn2t/ZKtHAIw8HqwQ==
+"@directus/utils@10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@directus/utils/-/utils-10.0.1.tgz#1780b01e66bfd34483b784969df778b87369ef66"
+  integrity sha512-hAVO4dH53HNNksL4bnx8exsfl/aroqVhOTJlL6WmF5B+Y89uFn8X/lT+pf791mY/TuAHlQBhGE3aEz2o66RCLA==
   dependencies:
-    "@directus/constants" "10.0.0"
-    "@directus/storage" "10.0.0"
+    "@directus/constants" "10.1.0"
     date-fns "2.29.3"
     fs-extra "11.1.1"
     joi "17.9.1"
@@ -370,10 +364,10 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.0.tgz#5fb2e536c1ae9bf35366eed879e827fa59ca41c2"
   integrity sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==
 
-"@types/node@^18.16.3":
-  version "18.16.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.16.3.tgz#6bda7819aae6ea0b386ebc5b24bdf602f1b42b01"
-  integrity sha512-OPs5WnnT1xkCBiuQrZA4+YAV4HEJejmHneyraIaxsbev5yCEr6KMwINNFP9wQeFIw8FWcoTqF3vQsa5CDaI+8Q==
+"@types/node@^20.1.3":
+  version "20.1.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.1.3.tgz#bc8e7cd8065a5fc355a3a191a68db8019c58bc00"
+  integrity sha512-NP2yfZpgmf2eDRPmgGq+fjGjSwFgYbihA8/gK+ey23qT9RkxsgNTZvGOEpXgzIGqesTYkElELLgtKoMQTys5vA==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"

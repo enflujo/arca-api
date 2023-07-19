@@ -2,11 +2,15 @@ import { defineHook } from '@directus/extensions-sdk';
 import { MeiliSearch } from 'meilisearch';
 import { clienteBuscador, crearIndiceObras, existeIndiceObras } from '../../buscador';
 import procesarObra from '../../buscador/procesarObra';
-
-const colecciones = ['obras'];
+import { colecciones, camposM2M, camposM2O, camposPlanos } from '../../buscador/constantes';
 
 export default defineHook(({ action }, { services, getSchema, database, logger }) => {
   const cliente = clienteBuscador() as MeiliSearch;
+  const campos = [
+    ...camposPlanos,
+    ...camposM2O.map((campo) => campo[0]),
+    ...camposM2M.map((campo) => `${campo[0]}.${campo[0]}_id.${campo[1]}`),
+  ];
 
   const { ItemsService } = services;
 
@@ -18,18 +22,32 @@ export default defineHook(({ action }, { services, getSchema, database, logger }
     }
   });
 
-  action('items.create', ({ collection, payload }) => {
-    // actualizarObras(collection, [key]);
+  action('items.create', async ({ collection, payload }) => {
     if (collection === 'obras') {
-      console.log(payload);
-      // const datosProcesados = procesarObra(payload);
-      // // console.log(datosProcesados);
-      // cliente.index('obras').addDocuments([datosProcesados]);
+      const schema = await getSchema();
+      const obras = new ItemsService('obras', { schema, knex: database });
+      const datosObra = await obras.readByQuery({
+        filter: { registro: { _eq: `${payload.registro}` } },
+        limit: 1,
+        fields: campos,
+      });
+
+      const obraProcesada = procesarObra(datosObra[0]);
+      await cliente.index('obras').addDocuments([obraProcesada]);
     }
   });
 
-  action('items.update', ({ collection, keys }) => {
-    actualizarObras(collection, keys);
+  action('items.update', async ({ collection, keys }) => {
+    console.log(collection, keys);
+    if (colecciones.includes(collection)) {
+      const schema = await getSchema();
+
+      if (collection === 'obras') {
+        const obras = new ItemsService('obras', { schema, knex: database });
+      }
+    }
+
+    // actualizarObras(collection, keys);
   });
 
   action('items.delete', ({ collection, payload }) => {

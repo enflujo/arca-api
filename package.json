@@ -32,8 +32,8 @@
     "build:slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "^10.0.0",
-    "@types/node": "^18.16.3",
+    "@directus/extensions-sdk": "^10.1.0",
+    "@types/node": "^20.1.3",
     "@types/pino": "^7.0.5",
     "copyfiles": "^2.4.1",
     "npm-run-all": "^4.1.5",

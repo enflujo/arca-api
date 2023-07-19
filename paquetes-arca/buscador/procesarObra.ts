@@ -125,12 +125,12 @@ export default (obra: any) => {
       }
     }
   });
-
+  console.log(procesado);
   for (const campo in procesado) {
     if (typeof procesado[campo] === 'object') {
       procesado[campo] = procesado[campo].join(', ');
     }
   }
-
+  console.log(procesado);
   return procesado;
 };

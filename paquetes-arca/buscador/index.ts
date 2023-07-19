@@ -48,6 +48,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
     };
 
   const cliente = clienteBuscador();
+
   if (!cliente)
     return {
       tipo: 'danger',
@@ -59,6 +60,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
     filter: { estado: { _eq: 'publicado' } },
     aggregate: { count: ['*'] },
   });
+
   const totalObras = +conteoObras[0].count;
 
   try {
@@ -115,7 +117,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
 
   creandoDocumentos = false;
   logger.info('Colección "obras" indexada en la base de datos del buscador');
-  return { tipo: 'success', mensaje: 'Obras indexadas con éxito.', codigo: 200 };
+  return { icono: 'check', tipo: 'success', mensaje: 'Obras indexadas con éxito.', codigo: 200 };
 }
 
 export function estadoInstanciaBuscador() {

@@ -23,12 +23,14 @@
           presentando problemas. Este proceso puede ser lento.</v-card-text
         >
       </v-card>
+
       <v-progress-circular v-if="procesando" indeterminate />
-      <v-info icon="person" :title="resultado.tipo" type="warning">{{ resultado.mensaje }}</v-info>
+
+      <v-info v-if="resultado.tipo" :icon="resultado.icono" :title="resultado.tipo" :type="resultado.tipo">{{
+        resultado.mensaje
+      }}</v-info>
 
       <v-button v-on:click="indexar">Reiniciar</v-button>
-
-      <v-button v-on:click="estado">Estado</v-button>
     </div>
   </private-view>
 </template>
@@ -44,7 +46,7 @@ export default defineComponent({
       llavePublica: '',
       version: null,
       procesando: false,
-      resultado: { tipo: 'Error', mensaje: 'esto es un mensaje del servidor', codigo: 0 },
+      resultado: { icono: '', tipo: '', mensaje: '', codigo: 0 },
     };
   },
 
@@ -53,13 +55,9 @@ export default defineComponent({
     async indexar() {
       this.procesando = true;
       const respuesta = await this.api('/arca-datos/reindexar');
-      console.log(respuesta.data);
-      this.procesando = false;
-    },
+      this.resultado = respuesta.data;
 
-    async estado() {
-      const respuesta = await this.api('/arca-datos/estado-buscador');
-      console.log(respuesta.data);
+      this.procesando = false;
     },
   },
 
@@ -72,26 +70,6 @@ export default defineComponent({
     if (version && version.pkgVersion) {
       this.version = version.pkgVersion;
     }
-    // console.log(MEILI_MASTER_KEY);
-    // if (!MEILI_MASTER_KEY) return;
-
-    // const cliente = new MeiliSearch({
-    //   host: 'https://apiarca.uniandes.edu.co/arca-buscador/',
-    //   apiKey: MEILI_MASTER_KEY,
-    // });
-    // const { total } = await cliente.index('obras').getDocuments({ limit: 1 });
-    // console.log(total);
-    // this.api.get('http://localhost:7700');
-    // this.api
-    //   .items('obras')
-    //   .readByQuery({
-    //     filter: { estado: { _eq: 'publicado' } },
-    //     aggregate: { count: ['*'] },
-    //   })
-    //   .then((respuesta) => {
-    //     console.log(respuesta);
-    //   })
-    //   .catch(console.error);
   },
 });
 </script>
@@ -108,10 +86,4 @@ export default defineComponent({
 .v-card {
   margin-bottom: 1em;
 }
-/* .v-chip {
-		--v-chip-color: var(--red);
-		--v-chip-background-color: var(--red-50);
-		--v-chip-color-hover: var(--white);
-		--v-chip-background-color-hover: var(--red);
-	} */
 </style>
