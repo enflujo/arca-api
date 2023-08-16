@@ -25,7 +25,7 @@
     "dev:datos": "yarn workspace arca-datos dev",
     "build": "run-s --print-label build:*",
     "build:buscador": "yarn workspace arca-buscador build",
-    "build_:buscador-directus": "yarn workspace arca-buscador-directus build",
+    "build:buscador-directus": "yarn workspace arca-buscador-directus build",
     "build:registros": "yarn workspace arca-registros build",
     "build:lugares": "yarn workspace arca-lugares-obras build",
     "build:datos": "yarn workspace arca-datos build",
