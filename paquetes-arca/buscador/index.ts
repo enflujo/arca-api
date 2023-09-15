@@ -42,6 +42,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
   // Si ya se esta creando la base de datos.
   if (creandoDocumentos)
     return {
+      titulo: 'Advertencia',
       tipo: 'warning',
       mensaje: 'Se están procesando los datos, esperar a que termine el proceso.',
       codigo: 204,
@@ -51,6 +52,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
 
   if (!cliente)
     return {
+      titulo: 'Error',
       tipo: 'danger',
       mensaje: 'Parece que Meilisearch no está corriendo, revisar el estado de la aplicación en el servidor.',
       codigo: 500,
@@ -69,7 +71,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
     const mensaje = `No se puede borrar colección "obras" de meilisearch: ${obtenerMensajeError(error)}`;
     logger.warn(mensaje);
     logger.debug(error);
-    return { tipo: 'danger', mensaje, codigo: 500 };
+    return { titulo: 'Error', tipo: 'danger', mensaje, codigo: 500 };
   }
 
   try {
@@ -79,7 +81,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
     logger.warn(mensaje);
     logger.debug(error);
 
-    return { tipo: 'danger', mensaje, codigo: 500 };
+    return { titulo: 'Error', tipo: 'danger', mensaje, codigo: 500 };
   }
 
   const limite = 100;
@@ -117,7 +119,7 @@ export async function crearIndiceObras(obras: any, logger: Logger) {
 
   creandoDocumentos = false;
   logger.info('Colección "obras" indexada en la base de datos del buscador');
-  return { icono: 'check', tipo: 'success', mensaje: 'Obras indexadas con éxito.', codigo: 200 };
+  return { titulo: 'Proceso Finalizado', tipo: 'success', mensaje: 'Obras indexadas con éxito.', codigo: 200 };
 }
 
 export function estadoInstanciaBuscador() {

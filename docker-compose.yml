@@ -74,10 +74,10 @@ services:
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
       MEILI_BD_URL: 'arca-bdbuscador'
 
-  # ----- CONTENEDOR PARA CMS -----
+  # ----- CONTENEDOR PARA BUSCADOR -----
   buscador:
     container_name: arca-bdbuscador
-    image: getmeili/meilisearch:v1.0
+    image: getmeili/meilisearch:v1.3
     restart: unless-stopped
     volumes:
       - ./datos-buscador:/meili_data
