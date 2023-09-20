@@ -1,39 +1,89 @@
 <template>
-  <private-view title="Buscador Arca (Meilisearch)">Content goes here...</private-view>
+  <private-view title="Buscador Arca (Meilisearch)">
+    <div class="contenido">
+      <v-chip x-small>Meilisearch v{{ version }}</v-chip>
+
+      <v-card>
+        <v-card-title>Llave pública del buscador</v-card-title>
+        <v-card-text>
+          Esta es la llave que se debe usar en el "fron-end" para acceder a los datos de Meilisearch.
+        </v-card-text>
+      </v-card>
+
+      <v-input v-model="llavePublica" readonly>
+        <template #prepend><v-icon name="vpn_key" /></template>
+      </v-input>
+
+      <v-divider></v-divider>
+
+      <v-card>
+        <v-card-title>Recrear base de datos del buscador</v-card-title>
+        <v-card-text
+          >La base de datos del buscador se puede eliminar y recrear en cualquier momento en caso de que los datos estén
+          presentando problemas. Este proceso puede ser lento.</v-card-text
+        >
+      </v-card>
+
+      <v-progress-circular v-if="procesando" indeterminate />
+
+      <v-info v-if="resultado.tipo" :icon="resultado.icono" :title="resultado.tipo" :type="resultado.tipo">{{
+        resultado.mensaje
+      }}</v-info>
+
+      <v-button v-on:click="indexar">Reiniciar</v-button>
+    </div>
+  </private-view>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { MeiliSearch } from 'meilisearch';
-const MEILI_MASTER_KEY = 'prueba';
 
 export default defineComponent({
   data() {
     return {
       totalObras: 0,
       obrasIndexadas: 0,
+      llavePublica: '',
+      version: null,
+      procesando: false,
+      resultado: { icono: '', tipo: '', mensaje: '', codigo: 0 },
     };
   },
 
   inject: ['api'],
-  async mounted() {
-    console.log(MEILI_MASTER_KEY);
-    if (!MEILI_MASTER_KEY) return;
+  methods: {
+    async indexar() {
+      this.procesando = true;
+      const respuesta = await this.api('/arca-datos/reindexar');
+      this.resultado = respuesta.data;
 
-    const cliente = new MeiliSearch({ host: 'http://arca-bdbuscador:7700', apiKey: MEILI_MASTER_KEY });
-    const { total } = await cliente.index('obras').getDocuments({ limit: 1 });
-    console.log(total);
-    // this.api.get('http://localhost:7700');
-    // this.api
-    //   .items('obras')
-    //   .readByQuery({
-    //     filter: { estado: { _eq: 'publicado' } },
-    //     aggregate: { count: ['*'] },
-    //   })
-    //   .then((respuesta) => {
-    //     console.log(respuesta);
-    //   })
-    //   .catch(console.error);
+      this.procesando = false;
+    },
+  },
+
+  async mounted() {
+    const { data: llave } = await this.api('/arca-datos/llave-buscador');
+    const { data: version } = await this.api('/arca-datos/version-buscador');
+
+    this.llavePublica = llave ? llave : '';
+
+    if (version && version.pkgVersion) {
+      this.version = version.pkgVersion;
+    }
   },
 });
 </script>
+
+<style scoped>
+.contenido {
+  padding: 0 var(--content-padding);
+}
+
+.v-divider {
+  margin: 2em 0;
+}
+
+.v-card {
+  margin-bottom: 1em;
+}
+</style>

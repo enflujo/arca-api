@@ -77,6 +77,12 @@ export type Obra = {
   ciudad: ID;
   /** M2O: Pais */
   pais: ID;
+  /** M2O: Gesto1 */
+  gesto1: { nombre: string; codigo: string };
+  /** M2O: Gesto2 */
+  gesto2: { nombre: string; codigo: string };
+  /** M2O: Gesto3 */
+  gesto3: { nombre: string; codigo: string };
   /**
    * ..:: Relaciones "Many to Many" (M2M) - Permite más de 1 valor ::..
    */
@@ -88,8 +94,6 @@ export type Obra = {
   escenarios: { escenarios_id: ID }[];
   /** M2M: Técnicas */
   tecnicas: { tecnicas_id: ID }[];
-  /** M2M: Gestos */
-  gestos: { gestos_id: ID }[];
   /** M2M: Personajes */
   personajes: { personajes_id: ID }[];
   /** M2M: Símbolos */
@@ -129,6 +133,12 @@ export interface CamposM2O {
   fisiognomica?: string;
   fisiognomica_imagen?: string;
   rostro?: string;
+  gesto1?: string;
+  gesto1_codigo?: string;
+  gesto2?: string;
+  gesto2_codigo?: string;
+  gesto3?: string;
+  gesto3_codigo?: string;
 }
 
 export interface CamposM2M {
@@ -136,7 +146,6 @@ export interface CamposM2M {
   escenarios?: string[];
   objetos?: string[];
   tecnicas?: string[];
-  gestos?: string[];
   personajes?: string[];
   simbolos?: string[];
   descriptores?: string[];
