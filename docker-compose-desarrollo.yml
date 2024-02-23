@@ -5,7 +5,6 @@ services:
   bd:
     container_name: arca-cms-bd-desarrollo
     image: postgis/postgis:13-master
-    restart: unless-stopped
     volumes:
       - ./dump:/docker-entrypoint-initdb.d
       - ./datos:/var/lib/postgresql/data
@@ -20,15 +19,13 @@ services:
   cache:
     container_name: arca-cms-cache-desarrollo
     image: redis:6
-    restart: unless-stopped
     networks:
       - arca-cms-red-desarrollo
 
   # ----- CONTENEDOR PARA CMS -----
   directus:
     container_name: arca-cms-desarrollo
-    image: directus/directus:10.8.2
-    restart: unless-stopped
+    image: directus/directus:10.9.2
     ports:
       - ${CMS_PUERTO}:8055
     volumes:
@@ -77,7 +74,6 @@ services:
   administrador:
     container_name: arca-pgadmin-desarrollo
     image: dpage/pgadmin4
-    restart: unless-stopped
     volumes:
       - ./pgadmin:/var/lib/pgadmin
     networks:
@@ -93,7 +89,6 @@ services:
   meilisearch:
     container_name: arca-bdbuscador-desarrollo
     image: getmeili/meilisearch:v1.3
-    restart: unless-stopped
     volumes:
       - ./datos-buscador-desarrollo:/meili_data
     networks:
