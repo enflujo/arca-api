@@ -27,7 +27,7 @@ services:
   # ----- CONTENEDOR PARA CMS -----
   directus:
     container_name: arca-cms
-    image: directus/directus:10.9.2
+    image: directus/directus:10.9.3
     restart: unless-stopped
     ports:
       - ${CMS_PUERTO}:8055
