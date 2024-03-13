@@ -22,7 +22,7 @@
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "rootDir": "./paquetes-arca"
+    "rootDir": "extensions"
   },
-  "include": ["./paquetes-arca/**/*.ts"]
+  "include": ["extensions/**/*.ts"]
 }

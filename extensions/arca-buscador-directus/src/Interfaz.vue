@@ -53,6 +53,7 @@ export default defineComponent({
   inject: ['api'],
   methods: {
     async indexar() {
+      if (!this.api) return;
       this.procesando = true;
       const respuesta = await this.api('/arca-datos/reindexar');
       this.resultado = respuesta.data;

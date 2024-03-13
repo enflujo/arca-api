@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "paquetes-arca/*"
+    "extensions/*"
   ],
   "scripts": {
     "lint": "prettier --check . '!./datos' '!./datos-buscador' '!./datos-buscador-desarrollo' '!./pgadmin' '!./extensions'",
@@ -29,16 +29,16 @@
     "build:registros": "yarn workspace arca-registros build",
     "build:lugares": "yarn workspace arca-lugares-obras build",
     "build:datos": "yarn workspace arca-datos build",
-    "build:slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
+    "build:slugs": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/slugs"
   },
   "devDependencies": {
-    "@directus/extensions-sdk": "^10.3.4",
-    "@types/node": "^20.11.24",
+    "@directus/extensions-sdk": "^11.0.1",
+    "@types/node": "^20.11.26",
     "@types/pino": "^7.0.5",
     "copyfiles": "^2.4.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
     "directus-extension-wpslug-interface": "^1.1.0",

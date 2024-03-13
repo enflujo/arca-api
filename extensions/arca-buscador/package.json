@@ -1,17 +1,18 @@
 {
-  "name": "arca-datos",
-  "description": "Otros puntos para obtener datos específicos a la aplicación",
-  "icon": "extension",
+  "name": "arca-buscador",
   "version": "1.0.0",
+  "description": "Hook de Directus para crear espejo de la base de datos en Meilisearch.",
+  "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "directus-extension build",
     "dev": "directus-extension build -w --no-minify",
     "link": "directus-extension link"
   },
   "directus:extension": {
-    "type": "endpoint",
-    "path": "../../extensions/endpoints/arca-datos/index.cjs",
+    "type": "hook",
+    "path": "dist/index.js",
     "source": "src/index.ts",
-    "host": "^10.0.0"
+    "host": "^10.10.0"
   }
 }
