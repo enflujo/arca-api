@@ -25,7 +25,7 @@ services:
   # ----- CONTENEDOR PARA CMS -----
   directus:
     container_name: arca-cms-desarrollo
-    image: directus/directus:10.10.4
+    image: directus/directus:10.10.5
     ports:
       - ${CMS_PUERTO}:8055
     volumes:
@@ -89,7 +89,7 @@ services:
 
   meilisearch:
     container_name: arca-bdbuscador-desarrollo
-    image: getmeili/meilisearch:v1.3
+    image: getmeili/meilisearch:v1.7
     volumes:
       - ./datos-buscador-desarrollo:/meili_data
     networks:
