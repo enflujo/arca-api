@@ -27,7 +27,7 @@ services:
   # ----- CONTENEDOR PARA CMS -----
   directus:
     container_name: arca-cms
-    image: directus/directus:10.9.3
+    image: directus/directus:10.10.5
     restart: unless-stopped
     ports:
       - ${CMS_PUERTO}:8055
@@ -77,7 +77,7 @@ services:
   # ----- CONTENEDOR PARA BUSCADOR -----
   buscador:
     container_name: arca-bdbuscador
-    image: getmeili/meilisearch:v1.3
+    image: getmeili/meilisearch:v1.7
     restart: unless-stopped
     volumes:
       - ./datos-buscador:/meili_data
