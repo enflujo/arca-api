@@ -17,11 +17,12 @@ jobs:
           username: ${{ secrets.USUARIO }}
           key: ${{ secrets.LLAVE_SSH }}
           script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
             cd ${{ secrets.RUTA }}
             git pull
             docker compose down
             yarn install --frozen-lockfile
-            yarn limpiar
             yarn build
             docker compose pull
             docker compose up -d
