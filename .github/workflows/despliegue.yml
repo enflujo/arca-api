@@ -22,7 +22,7 @@ jobs:
             cd ${{ secrets.RUTA }}
             git pull
             docker compose down
-            yarn install --frozen-lockfile
+            yarn install --immutable
             yarn build
             docker compose pull
             docker compose up -d
