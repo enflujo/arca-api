@@ -26,6 +26,7 @@ Thumbs.db
 /extensions/interfaces
 /extensions/modules
 /extensions/endpoints
+/extensions/.registry
 
 # Ver documentación de Yarn moderno (> v2): https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .yarn/*
