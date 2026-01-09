@@ -1,12 +1,36 @@
 import { camposM2M, camposM2O, camposPlanos } from './constantes';
 import { Obra } from './tipos';
 
+function limpiarHTML(texto: string): string {
+  if (!texto || typeof texto !== 'string') return texto;
+
+  // Remover etiquetas HTML
+  let limpio = texto.replace(/<[^>]*>/g, '');
+
+  // Decodificar entidades HTML
+  limpio = limpio
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+
+  // Remover espacios múltiples
+  limpio = limpio.replace(/\s+/g, ' ').trim();
+
+  return limpio;
+}
+
 export default (obra: any) => {
   const procesado: any = { registro: obra.registro, titulo: obra.titulo, gestos: [] };
 
+  // Siempre inicializamos categorias para poder ir agregando en cualquier orden.
+  procesado.categorias = [];
+
   camposPlanos.forEach((campo) => {
     if (obra[campo]) {
-      procesado[campo] = obra[campo];
+      procesado[campo] = typeof obra[campo] === 'string' ? limpiarHTML(obra[campo]) : obra[campo];
     }
   });
 
@@ -31,35 +55,32 @@ export default (obra: any) => {
           break;
         case 'categoria1':
           if (obra.categoria1 && obra.categoria1.nombre) {
-            if (!procesado.categorias) {
-              procesado.categorias = [];
-            }
             procesado.categorias.push(obra.categoria1.nombre);
           }
           break;
         case 'categoria2':
           if (obra.categoria2 && obra.categoria2.nombre) {
-            procesado.categorias?.push(obra.categoria2.nombre);
+            procesado.categorias.push(obra.categoria2.nombre);
           }
           break;
         case 'categoria3':
           if (obra.categoria3 && obra.categoria3.nombre) {
-            procesado.categorias?.push(obra.categoria3.nombre);
+            procesado.categorias.push(obra.categoria3.nombre);
           }
           break;
         case 'categoria4':
           if (obra.categoria4 && obra.categoria4.nombre) {
-            procesado.categorias?.push(obra.categoria4.nombre);
+            procesado.categorias.push(obra.categoria4.nombre);
           }
           break;
         case 'categoria5':
           if (obra.categoria5 && obra.categoria5.nombre) {
-            procesado.categorias?.push(obra.categoria5.nombre);
+            procesado.categorias.push(obra.categoria5.nombre);
           }
           break;
         case 'categoria6':
           if (obra.categoria6 && obra.categoria6.nombre) {
-            procesado.categorias?.push(obra.categoria6.nombre);
+            procesado.categorias.push(obra.categoria6.nombre);
           }
           break;
         case 'gesto1':
@@ -89,7 +110,7 @@ export default (obra: any) => {
               const valor: any = obj[llave];
 
               if (valor && nuevaLlave) {
-                procesado[nuevaLlave] = valor;
+                procesado[nuevaLlave] = typeof valor === 'string' ? limpiarHTML(valor) : valor;
               }
             }
           }
@@ -118,19 +139,18 @@ export default (obra: any) => {
 
               procesado[nuevaLlave].push(nombreCompleto.join(' '));
             } else {
-              procesado[nuevaLlave].push(instancia[intermedia][llave]);
+              const valor = instancia[intermedia][llave];
+              procesado[nuevaLlave].push(typeof valor === 'string' ? limpiarHTML(valor) : valor);
             }
           }
         });
       }
     }
   });
-  console.log(procesado);
   for (const campo in procesado) {
-    if (typeof procesado[campo] === 'object') {
+    if (Array.isArray(procesado[campo])) {
       procesado[campo] = procesado[campo].join(', ');
     }
   }
-  console.log(procesado);
   return procesado;
 };

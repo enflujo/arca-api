@@ -78,3 +78,38 @@ export const colecciones = [
   'descriptores',
   'caracteristicas',
 ];
+
+/**
+ * Mapa de relaciones para encontrar obras afectadas por cambios en colecciones relacionadas.
+ * M2O: campo directo en la tabla obras
+ * M2M: nombre de la tabla pivote que conecta obras con la colección
+ */
+export const mapaRelaciones: Record<string, { tipo: 'M2O' | 'M2M'; campo?: string; tablaPivote?: string }> = {
+  fuentes: { tipo: 'M2O', campo: 'fuente' },
+  categorias1: { tipo: 'M2O', campo: 'categoria1' },
+  categorias2: { tipo: 'M2O', campo: 'categoria2' },
+  categorias3: { tipo: 'M2O', campo: 'categoria3' },
+  categorias4: { tipo: 'M2O', campo: 'categoria4' },
+  categorias5: { tipo: 'M2O', campo: 'categoria5' },
+  categorias6: { tipo: 'M2O', campo: 'categoria6' },
+  donantes: { tipo: 'M2O', campo: 'donante' },
+  ubicaciones: { tipo: 'M2O', campo: 'ubicacion' },
+  ciudades: { tipo: 'M2O', campo: 'ciudad' },
+  paises: { tipo: 'M2O', campo: 'pais' },
+  relatos_visuales: { tipo: 'M2O', campo: 'relato_visual' },
+  complejos_gestuales: { tipo: 'M2O', campo: 'complejo_gestual' },
+  tipos_gestuales: { tipo: 'M2O', campo: 'tipo_gestual' },
+  gestos: { tipo: 'M2O', campo: 'gesto1' }, // Simplificado: también afecta gesto2, gesto3
+  fisiognomicas: { tipo: 'M2O', campo: 'fisiognomica' },
+  fisiognomicas_imagen: { tipo: 'M2O', campo: 'fisiognomica_imagen' },
+  rostros: { tipo: 'M2O', campo: 'rostro' },
+  ciudad_origen: { tipo: 'M2O', campo: 'ciudad_origen' },
+  autores: { tipo: 'M2M', tablaPivote: 'obras_autores' },
+  personajes: { tipo: 'M2M', tablaPivote: 'obras_personajes' },
+  objetos: { tipo: 'M2M', tablaPivote: 'obras_objetos' },
+  escenarios: { tipo: 'M2M', tablaPivote: 'obras_escenarios' },
+  tecnicas: { tipo: 'M2M', tablaPivote: 'obras_tecnicas' },
+  simbolos: { tipo: 'M2M', tablaPivote: 'obras_simbolos' },
+  descriptores: { tipo: 'M2M', tablaPivote: 'obras_descriptores' },
+  caracteristicas: { tipo: 'M2M', tablaPivote: 'obras_caracteristicas' },
+};

@@ -218,3 +218,36 @@ Paquete que comparten todos:
 ```bash
 yarn add NOMBRE_EXTENSION -W
 ```
+
+## Crear respaldo
+
+Si requiere de permisos:
+
+```bash
+chmod +x crearRespaldo.sh
+```
+
+Ejecutar conjuro de respaldo en el servidor. Esto crea un archivo con el nombre `dump/arcabd_${FECHA}.sql`:
+
+```bash
+bash crearRespaldo.sh
+```
+
+Si hay errores en el formato de .env, convertirlo en UNIX con:
+
+```bash
+sudo apt install dos2unix
+dos2unix .env
+```
+
+Para descargar el `.sql` en otro computador:
+
+```bash
+scp usuario@IP_DEL_SERVIDOR:/ruta/al/proyecto/dump/arcabd_2026-01-05_11-23-41.sql .
+```
+
+Para no tener que escribir todo el nombre, se puede usar este para descargar el último respaldo:
+
+```bash
+scp arca@dDOMINIO:"/home/arca/arca-pi/dump/$(ls -t /home/arca/arca-api/dump/*.sql | head -n 1)" .
+```
