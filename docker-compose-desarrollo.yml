@@ -17,7 +17,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_interval: 5s
       start_period: 30s
 
   # ----- CONTENEDOR PARA SISTEMA CACHE -----
@@ -29,7 +28,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_interval: 5s
       start_period: 30s
     networks:
       - arca-cms-red-desarrollo
